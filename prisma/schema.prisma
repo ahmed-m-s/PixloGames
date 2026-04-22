@@ -1,0 +1,248 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Game {
+  id                 String                     @id
+  slug               String                     @unique
+  title              String
+  shortDescription   String
+  description        String
+  thumbnail          String
+  coverImage         String
+  category           String
+  tags               String[]
+  rating             Float
+  plays              Int
+  isNew              Boolean                    @default(false)
+  isTrending         Boolean                    @default(false)
+  isMultiplayer      Boolean                    @default(false)
+  isEditorsPick      Boolean                    @default(false)
+  embedUrl           String
+  controls           Json
+  mobileSupported    Boolean                    @default(false)
+  developerName      String
+  publisherName      String
+  releaseDate        DateTime
+  contentUpdatedAt   DateTime
+  supportedPlatforms String[]
+  orientation        String
+  difficulty         String                     @default("medium")
+  seoTitle           String?
+  seoDescription     String?
+  contentRating      String
+  featuredWeight     Int                        @default(0)
+  isFeatured         Boolean                    @default(false)
+  isSponsored        Boolean                    @default(false)
+  adSafe             Boolean                    @default(true)
+  status             String
+  playMode           String
+  hasRealEmbed       Boolean                    @default(false)
+  embedType          String
+  sourceMode         String
+  sourceProviderName String?
+  sourceUrl          String?
+  sourceMessage      String
+  submissionStatus   String
+  moderationStatus   String
+  reviewNotes        String[]
+  featuredPriority   Int                        @default(0)
+  sponsoredPriority  Int                        @default(0)
+  visibility         String
+  publishAt          DateTime?
+  unpublishAt        DateTime?
+  sourceOrigin       String
+  ingestionWarnings  String[]
+  qaStatus           String
+  sourceSubmissionId String?                    @unique
+  createdAt          DateTime                   @default(now())
+  recordUpdatedAt    DateTime                   @updatedAt
+  collections        GameCollectionMembership[]
+  mediaAssets        MediaAsset[]
+  sourceSubmission   Submission?                @relation("SubmissionPublishedGame", fields: [sourceSubmissionId], references: [id], onDelete: SetNull)
+
+  @@index([category])
+  @@index([visibility])
+  @@index([status])
+  @@index([featuredPriority])
+  @@index([sponsoredPriority])
+  @@index([sourceSubmissionId])
+}
+
+model Collection {
+  id          String                     @id
+  slug        String                     @unique
+  title       String
+  description String
+  type        String
+  visibility  String
+  placement   String[]
+  category    String?
+  priority    Int                        @default(0)
+  sponsored   Boolean                    @default(false)
+  startsAt    DateTime?
+  endsAt      DateTime?
+  owner       String
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
+  games       GameCollectionMembership[]
+
+  @@index([visibility])
+  @@index([priority])
+  @@index([type])
+}
+
+model GameCollectionMembership {
+  gameId       String
+  collectionId String
+  position     Int        @default(0)
+  assignedAt   DateTime   @default(now())
+  game         Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@id([gameId, collectionId])
+  @@index([collectionId, position])
+}
+
+model Submission {
+  id                 String             @id
+  title              String
+  shortDescription   String?
+  description        String?
+  tags               String[]           @default([])
+  developerName      String
+  publisherName      String?
+  contactEmail       String
+  category           String
+  submittedAt        DateTime
+  contentUpdatedAt   DateTime
+  status             String
+  proposedEmbedType  String
+  buildUrl           String
+  sourceType         String             @default("external_url")
+  sourceUrl          String?
+  thumbnailUrl       String?
+  coverImageUrl      String?
+  websiteUrl         String?
+  submitterNotes     String?
+  intakeWarnings     String[]           @default([])
+  duplicateSignal    String?
+  abuseScore         Int                @default(0)
+  submittedIpHash    String?
+  submittedUserAgent String?
+  termsAccepted      Boolean            @default(false)
+  supportedPlatforms String[]
+  reviewOwner        String
+  reviewNotes        String[]
+  criteria           Json
+  publishingStatus   String             @default("not_started")
+  publishedAt        DateTime?
+  publishingNotes    String[]           @default([])
+  createdAt          DateTime           @default(now())
+  recordUpdatedAt    DateTime           @updatedAt
+  reviews            SubmissionReview[]
+  publishedGame      Game?              @relation("SubmissionPublishedGame")
+  mediaAssets        MediaAsset[]
+
+  @@index([status])
+  @@index([category])
+  @@index([contactEmail])
+  @@index([submittedAt])
+  @@index([publishingStatus])
+}
+
+model MediaAsset {
+  id               String      @id
+  assetType        String
+  originalFilename String
+  mimeType         String
+  fileSize         Int
+  storageProvider  String      @default("local-dev")
+  storageKey       String      @unique
+  storagePath      String
+  publicUrl        String
+  width            Int?
+  height           Int?
+  uploadSource     String
+  submissionId     String?
+  gameId           String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  submission       Submission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+  game             Game?       @relation(fields: [gameId], references: [id], onDelete: SetNull)
+
+  @@index([assetType])
+  @@index([uploadSource])
+  @@index([submissionId])
+  @@index([gameId])
+  @@index([createdAt])
+}
+
+model SubmissionReview {
+  id           String     @id @default(cuid())
+  submissionId String
+  action       String
+  note         String?
+  reviewerName String?
+  createdAt    DateTime   @default(now())
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([submissionId])
+  @@index([action])
+}
+
+model InternalUser {
+  id           String            @id @default(cuid())
+  email        String            @unique
+  name         String
+  role         String
+  passwordHash String
+  active       Boolean           @default(true)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  sessions     InternalSession[]
+
+  @@index([role])
+  @@index([active])
+}
+
+model InternalSession {
+  id        String       @id @default(cuid())
+  userId    String
+  tokenHash String       @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  user      InternalUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  name      String
+  payload   Json
+  sessionId String?
+  userId    String?
+  createdAt DateTime @default(now())
+
+  @@index([name])
+  @@index([createdAt])
+}
+
+model AdPlacement {
+  id            String   @id
+  placementKey  String   @unique
+  label         String
+  enabled       Boolean  @default(false)
+  sponsoredOnly Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

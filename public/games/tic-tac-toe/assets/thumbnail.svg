@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Tic Tac Toe thumbnail</title>
+  <desc id="desc">A polished neon tic tac toe board with X and O marks.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#121829"/>
+      <stop offset="1" stop-color="#05070c"/>
+    </linearGradient>
+    <linearGradient id="cell" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#223047"/>
+      <stop offset="1" stop-color="#0d1321"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="640" height="420" rx="32" fill="url(#bg)"/>
+  <circle cx="118" cy="86" r="112" fill="#62ffae" opacity=".12"/>
+  <circle cx="540" cy="332" r="150" fill="#6bdcff" opacity=".12"/>
+  <g transform="translate(170 70)">
+    <rect width="300" height="300" rx="24" fill="#070a12" stroke="#ffffff" stroke-opacity=".12"/>
+    <g fill="url(#cell)" stroke="#ffffff" stroke-opacity=".12" stroke-width="2">
+      <rect x="22" y="22" width="76" height="76" rx="14"/>
+      <rect x="112" y="22" width="76" height="76" rx="14"/>
+      <rect x="202" y="22" width="76" height="76" rx="14"/>
+      <rect x="22" y="112" width="76" height="76" rx="14"/>
+      <rect x="112" y="112" width="76" height="76" rx="14"/>
+      <rect x="202" y="112" width="76" height="76" rx="14"/>
+      <rect x="22" y="202" width="76" height="76" rx="14"/>
+      <rect x="112" y="202" width="76" height="76" rx="14"/>
+      <rect x="202" y="202" width="76" height="76" rx="14"/>
+    </g>
+    <g fill="none" stroke-linecap="round" stroke-width="10" filter="url(#glow)">
+      <path d="M42 42l36 36M78 42L42 78" stroke="#62ffae"/>
+      <circle cx="150" cy="60" r="21" stroke="#6bdcff"/>
+      <path d="M222 42l36 36M258 42l-36 36" stroke="#62ffae"/>
+      <circle cx="60" cy="150" r="21" stroke="#6bdcff"/>
+      <path d="M132 132l36 36M168 132l-36 36" stroke="#62ffae"/>
+      <circle cx="240" cy="150" r="21" stroke="#6bdcff"/>
+      <path d="M42 222l36 36M78 222l-36 36" stroke="#62ffae"/>
+    </g>
+  </g>
+  <text x="44" y="370" fill="#f8fbff" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="900">Tic Tac Toe</text>
+  <text x="46" y="394" fill="#a6b1c2" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">Quick local strategy</text>
+</svg>

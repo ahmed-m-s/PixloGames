@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality Gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: pixlo_ci
+          POSTGRES_PASSWORD: pixlo_ci
+          POSTGRES_USER: pixlo_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pixlo_ci -d pixlo_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://pixlo_ci:pixlo_ci@localhost:5432/pixlo_ci
+      PIXLO_INTERNAL_ADMIN_EMAIL: admin@pixlogames.local
+      PIXLO_INTERNAL_ADMIN_PASSWORD: pixlo-ci-admin
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Generate Prisma client
+        run: npm run db:generate
+
+      - name: Apply database migrations
+        run: npm run db:deploy
+
+      - name: Seed catalog data
+        run: npm run db:seed
+
+      - name: Validate commit messages
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.event.pull_request.head.sha }}" --verbose
+
+      - name: Security audit
+        run: npm run security:audit
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Accessibility lint
+        run: npm run a11y:lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit, catalog integrity, and coverage tests
+        run: npm run test:coverage
+
+      - name: Build
+        run: npm run build
+
+      - name: Performance budget
+        run: npm run perf:budget
+
+      - name: Browser smoke tests - public game journey
+        run: npm run test:smoke
+
+      - name: Runtime accessibility smoke tests - axe
+        run: npm run test:a11y
+
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pixlo-ci-failure-diagnostics
+          path: |
+            coverage
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+          retention-days: 7

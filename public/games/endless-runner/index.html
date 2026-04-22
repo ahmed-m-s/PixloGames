@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Endless Runner is a lightweight HTML5 canvas game built for PixloGames."
+    />
+    <title>Endless Runner | PixloGames</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Endless Runner game">
+      <section class="game-card">
+        <div class="top-bar" aria-hidden="true">
+          <div>
+            <p class="eyebrow">PixloGames</p>
+            <h1>Endless Runner</h1>
+          </div>
+          <div class="score-wrap">
+            <div>
+              <span>Score</span>
+              <strong id="scoreValue">0</strong>
+            </div>
+            <div>
+              <span>Best</span>
+              <strong id="bestValue">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="canvas-frame" id="gameFrame" tabindex="0">
+          <canvas
+            id="gameCanvas"
+            width="960"
+            height="540"
+            aria-label="Endless Runner canvas"
+            tabindex="-1"
+          ></canvas>
+
+          <div class="hud-pill" id="playHint">Press ↑ to jump</div>
+
+          <div class="screen-overlay" id="startScreen">
+            <div class="screen-panel">
+              <p class="eyebrow">HTML5 Canvas Runner</p>
+              <h2>Run clean. Jump sharp.</h2>
+              <p>Clear the obstacles, keep your rhythm, and survive as the city speeds up.</p>
+              <button class="game-button" id="startButton" type="button">Start Game</button>
+              <span class="control-note">Press ↑ to jump. Click or tap also works.</span>
+            </div>
+          </div>
+
+          <div class="screen-overlay hidden" id="gameOverScreen">
+            <div class="screen-panel">
+              <p class="eyebrow">Run complete</p>
+              <h2>Game Over</h2>
+              <div class="result-grid">
+                <div>
+                  <span>Final score</span>
+                  <strong id="finalScore">0</strong>
+                </div>
+                <div>
+                  <span>Best score</span>
+                  <strong id="finalBest">0</strong>
+                </div>
+              </div>
+              <button class="game-button" id="restartButton" type="button">Restart</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-bar">
+          <span>Responsive canvas</span>
+          <span>Local best score</span>
+          <span>Iframe-ready</span>
+        </div>
+      </section>
+    </main>
+
+    <script src="./game.js" defer></script>
+  </body>
+</html>

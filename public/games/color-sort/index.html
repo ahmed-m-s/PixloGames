@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Color Sort is a polished HTML5 sorting puzzle for PixloGames."
+    />
+    <title>Color Sort | PixloGames</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Color Sort game">
+      <section class="game-card">
+        <header class="game-header">
+          <div>
+            <p class="eyebrow">PixloGames</p>
+            <h1>Color Sort</h1>
+          </div>
+          <div class="stats" aria-label="Puzzle stats">
+            <div class="stat">
+              <span class="stat-label">Moves</span>
+              <strong id="moves">0</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Best</span>
+              <strong id="bestMoves">--</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Puzzle</span>
+              <strong id="puzzleLabel">1</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="play-area">
+          <div class="tube-panel">
+            <div class="tube-board" id="tubeBoard" aria-label="Color sort tubes" tabindex="0"></div>
+          </div>
+
+          <aside class="side-panel">
+            <div class="panel-block">
+              <p class="panel-title">How to play</p>
+              <p class="panel-copy">
+                Select a tube, then choose a matching or empty tube to pour into.
+              </p>
+              <div class="control-list">
+                <span>Click</span>
+                <span>Tap</span>
+                <span>Logic puzzle</span>
+              </div>
+            </div>
+
+            <div class="panel-block">
+              <p class="panel-title">Puzzle status</p>
+              <p class="panel-copy" id="statusText">
+                Start sorting until each tube holds a single color.
+              </p>
+              <button class="secondary-button" id="resetButton" type="button">Reset Puzzle</button>
+            </div>
+          </aside>
+
+          <div class="overlay is-visible" id="startScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">Sort every stack</p>
+              <h2>Pour colors into clean single-color tubes.</h2>
+              <p>
+                Tap one tube, then another. You can only pour onto the same color or into an empty
+                tube.
+              </p>
+              <button class="game-button" id="startButton" type="button">Start Game</button>
+              <p class="hint">Finish in fewer moves to improve your best result.</p>
+            </div>
+          </div>
+
+          <div class="overlay" id="winScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">Puzzle solved</p>
+              <h2>Clean Sort</h2>
+              <p id="winSummary">Solved in 0 moves.</p>
+              <div class="result-grid">
+                <div>
+                  <span>Moves</span>
+                  <strong id="finalMoves">0</strong>
+                </div>
+                <div>
+                  <span>Best</span>
+                  <strong id="finalBest">--</strong>
+                </div>
+              </div>
+              <button class="game-button" id="nextButton" type="button">Next Puzzle</button>
+            </div>
+          </div>
+        </section>
+
+        <footer class="game-footer">
+          <span>Tap-to-pour controls</span>
+          <span>Best move count saved locally</span>
+        </footer>
+      </section>
+    </main>
+
+    <script src="./game.js" defer></script>
+  </body>
+</html>

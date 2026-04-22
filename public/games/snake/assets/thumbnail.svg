@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="620" viewBox="0 0 900 620" role="img" aria-label="Snake thumbnail">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="1" stop-color="#050609"/>
+    </linearGradient>
+    <linearGradient id="snake" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#75d8ff"/>
+      <stop offset="1" stop-color="#5ef2b6"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="620" fill="url(#bg)"/>
+  <circle cx="170" cy="120" r="168" fill="#5ef2b6" opacity=".13"/>
+  <circle cx="735" cy="500" r="214" fill="#75d8ff" opacity=".1"/>
+  <rect x="205" y="92" width="490" height="490" rx="34" fill="#071014" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/>
+  <g stroke="#ffffff" stroke-opacity=".05" stroke-width="2">
+    <path d="M254 92v490M303 92v490M352 92v490M401 92v490M450 92v490M499 92v490M548 92v490M597 92v490M646 92v490"/>
+    <path d="M205 141h490M205 190h490M205 239h490M205 288h490M205 337h490M205 386h490M205 435h490M205 484h490M205 533h490"/>
+  </g>
+  <g fill="url(#snake)">
+    <rect x="303" y="337" width="49" height="49" rx="12"/>
+    <rect x="352" y="337" width="49" height="49" rx="12"/>
+    <rect x="401" y="337" width="49" height="49" rx="12"/>
+    <rect x="450" y="337" width="49" height="49" rx="12"/>
+    <rect x="499" y="288" width="49" height="49" rx="12"/>
+    <rect x="499" y="239" width="49" height="49" rx="12"/>
+  </g>
+  <circle cx="621" cy="190" r="22" fill="#ffd166"/>
+  <circle cx="533" cy="256" r="4" fill="#06110c"/>
+  <text x="450" y="62" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="900" letter-spacing="5" fill="#5ef2b6">PIXLOGAMES</text>
+</svg>

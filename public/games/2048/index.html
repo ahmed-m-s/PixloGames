@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="2048 is a lightweight HTML5 number puzzle for PixloGames." />
+    <title>2048 | PixloGames</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="2048 game">
+      <section class="game-card">
+        <header class="game-header">
+          <div>
+            <p class="eyebrow">PixloGames</p>
+            <h1>2048</h1>
+          </div>
+          <div class="stats" aria-label="Current game stats">
+            <div class="stat">
+              <span>Score</span>
+              <strong id="scoreValue">0</strong>
+            </div>
+            <div class="stat">
+              <span>Best</span>
+              <strong id="bestValue">0</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="play-area">
+          <div class="board" id="board" aria-label="2048 board"></div>
+
+          <div class="overlay is-visible" id="startScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">Number Merge</p>
+              <h2>Slide. Merge. Survive.</h2>
+              <p>Combine matching tiles, build bigger numbers, and keep the 4x4 board open.</p>
+              <button class="game-button" id="startButton" type="button">Start Game</button>
+              <p class="hint">Arrow keys, WASD, or swipe to move</p>
+            </div>
+          </div>
+
+          <div class="overlay" id="gameOverScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">Board locked</p>
+              <h2>Game Over</h2>
+              <div class="result-grid">
+                <div>
+                  <span>Final score</span>
+                  <strong id="finalScore">0</strong>
+                </div>
+                <div>
+                  <span>Best score</span>
+                  <strong id="finalBest">0</strong>
+                </div>
+              </div>
+              <button class="game-button" id="restartButton" type="button">Play Again</button>
+            </div>
+          </div>
+
+          <div class="milestone" id="milestone">2048 reached</div>
+        </section>
+
+        <footer class="game-footer">
+          <span>4x4 number board</span>
+          <span>Local best score</span>
+          <span>Iframe-ready</span>
+        </footer>
+      </section>
+    </main>
+
+    <script src="./game.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+import type { Game } from '@/types/game';
+
+export function makeGame(overrides: Partial<Game> = {}): Game {
+  return {
+    id: 'game-test',
+    slug: 'test-game',
+    title: 'Test Game',
+    shortDescription: 'A concise test game description.',
+    description:
+      'A longer test game description used by automated tests for PixloGames catalog behavior.',
+    thumbnail: '/games/test-game/assets/thumbnail.svg',
+    coverImage: '/games/test-game/assets/cover.svg',
+    category: 'Puzzle',
+    tags: ['logic', 'casual', 'mobile'],
+    rating: 4.5,
+    plays: 1000,
+    isNew: false,
+    isTrending: false,
+    isMultiplayer: false,
+    isEditorsPick: false,
+    embedUrl: '/games/test-game/index.html',
+    controls: {
+      keyboard: [],
+      mouse: true,
+      touch: true
+    },
+    mobileSupported: true,
+    developerName: 'PixloGames Lab',
+    publisherName: 'PixloGames',
+    releaseDate: '2026-04-20',
+    updatedAt: '2026-04-20',
+    supportedPlatforms: ['desktop', 'mobile', 'tablet'],
+    orientation: 'responsive',
+    difficulty: 'medium',
+    seoTitle: 'Test Game - PixloGames',
+    seoDescription: 'Test game SEO description.',
+    contentRating: 'Everyone',
+    featuredWeight: 0,
+    isFeatured: false,
+    isSponsored: false,
+    adSafe: true,
+    status: 'published',
+    playMode: 'single-player',
+    hasRealEmbed: true,
+    embedType: 'html5-package',
+    source: {
+      mode: 'embedded',
+      embedType: 'html5-package',
+      url: '/games/test-game/index.html',
+      message: 'Ready to play.'
+    },
+    submissionStatus: 'approved',
+    moderationStatus: 'approved',
+    reviewNotes: [],
+    featuredPriority: 0,
+    sponsoredPriority: 0,
+    collectionIds: [],
+    visibility: 'public',
+    publishAt: '2026-04-20',
+    sourceOrigin: 'first_party',
+    ingestionWarnings: [],
+    qaStatus: 'passed',
+    ...overrides
+  };
+}

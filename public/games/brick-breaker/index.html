@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Brick Breaker is a lightweight HTML5 arcade game for PixloGames."
+    />
+    <title>Brick Breaker | PixloGames</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Brick Breaker game">
+      <section class="game-card">
+        <header class="game-header">
+          <div>
+            <p class="eyebrow">PixloGames</p>
+            <h1>Brick Breaker</h1>
+          </div>
+          <div class="stats">
+            <div class="stat">
+              <span>Score</span>
+              <strong id="scoreValue">0</strong>
+            </div>
+            <div class="stat">
+              <span>Lives</span>
+              <strong id="livesValue">3</strong>
+            </div>
+            <div class="stat">
+              <span>Best</span>
+              <strong id="bestValue">0</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="canvas-wrap" id="gameFrame">
+          <canvas
+            id="gameCanvas"
+            width="960"
+            height="540"
+            aria-label="Brick Breaker canvas"
+          ></canvas>
+
+          <div class="overlay is-visible" id="startScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">Arcade Rally</p>
+              <h2>Break bright. Keep control.</h2>
+              <p>
+                Move the paddle, launch the ball, and clear every brick before your lives run out.
+              </p>
+              <button class="game-button" id="startButton" type="button">Start Game</button>
+              <p class="hint">Arrow keys, mouse, or touch. Space or tap launches.</p>
+            </div>
+          </div>
+
+          <div class="overlay" id="gameOverScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">Rally ended</p>
+              <h2 id="endTitle">Game Over</h2>
+              <div class="result-grid">
+                <div>
+                  <span>Final score</span>
+                  <strong id="finalScore">0</strong>
+                </div>
+                <div>
+                  <span>Best score</span>
+                  <strong id="finalBest">0</strong>
+                </div>
+              </div>
+              <button class="game-button" id="restartButton" type="button">Play Again</button>
+            </div>
+          </div>
+        </section>
+
+        <footer class="game-footer">
+          <span>Mouse / touch paddle</span>
+          <span>Space launches</span>
+          <span>Local best score</span>
+        </footer>
+      </section>
+    </main>
+
+    <script src="./game.js" defer></script>
+  </body>
+</html>

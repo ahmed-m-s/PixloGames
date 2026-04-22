@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Tic Tac Toe is a polished local two-player HTML5 board game for PixloGames."
+    />
+    <title>Tic Tac Toe | PixloGames</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Tic Tac Toe game">
+      <section class="game-card">
+        <header class="game-header">
+          <div>
+            <p class="eyebrow">PixloGames</p>
+            <h1>Tic Tac Toe</h1>
+          </div>
+          <div class="stats" aria-label="Match stats">
+            <div class="stat">
+              <span class="stat-label">Turn</span>
+              <strong id="turnLabel">X</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">X Wins</span>
+              <strong id="xWins">0</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">O Wins</span>
+              <strong id="oWins">0</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="play-area">
+          <div class="board-panel">
+            <div class="board" id="board" aria-label="Tic Tac Toe board" tabindex="0"></div>
+          </div>
+
+          <aside class="side-panel">
+            <div class="panel-block">
+              <p class="panel-title">How to play</p>
+              <p class="panel-copy">
+                Take turns placing X and O. First player to connect three wins.
+              </p>
+              <div class="control-list">
+                <span>Click</span>
+                <span>Tap</span>
+                <span>Local two-player</span>
+              </div>
+            </div>
+
+            <div class="panel-block">
+              <p class="panel-title">Match status</p>
+              <p class="panel-copy" id="statusText">
+                Start a match and claim the center if you can.
+              </p>
+              <button class="secondary-button" id="resetButton" type="button">New Round</button>
+            </div>
+          </aside>
+
+          <div class="overlay is-visible" id="startScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">Quick local duel</p>
+              <h2>Line up three marks before your opponent blocks you.</h2>
+              <p>Play a fast local match with clean tap or click controls.</p>
+              <button class="game-button" id="startButton" type="button">Start Game</button>
+              <p class="hint">X always takes the first move.</p>
+            </div>
+          </div>
+
+          <div class="overlay" id="resultScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow" id="resultEyebrow">Round complete</p>
+              <h2 id="resultTitle">X wins</h2>
+              <p id="resultSummary">Three in a row. Play another round?</p>
+              <div class="result-grid">
+                <div>
+                  <span>X Wins</span>
+                  <strong id="finalXWins">0</strong>
+                </div>
+                <div>
+                  <span>O Wins</span>
+                  <strong id="finalOWins">0</strong>
+                </div>
+                <div>
+                  <span>Draws</span>
+                  <strong id="finalDraws">0</strong>
+                </div>
+              </div>
+              <button class="game-button" id="restartButton" type="button">Play Again</button>
+            </div>
+          </div>
+        </section>
+
+        <footer class="game-footer">
+          <span>3x3 classic board</span>
+          <span>Local score is saved on this device</span>
+        </footer>
+      </section>
+    </main>
+
+    <script src="./game.js" defer></script>
+  </body>
+</html>

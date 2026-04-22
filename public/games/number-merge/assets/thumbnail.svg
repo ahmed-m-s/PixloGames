@@ -1,0 +1,55 @@
+<svg width="960" height="600" viewBox="0 0 960 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="960" height="600" fill="#07080D"/>
+  <path d="M0 0H960V600H0V0Z" fill="url(#bg)"/>
+  <circle cx="164" cy="120" r="132" fill="#58FFC9" fill-opacity=".14"/>
+  <circle cx="810" cy="154" r="126" fill="#FFE36D" fill-opacity=".12"/>
+  <circle cx="704" cy="510" r="170" fill="#A58BFF" fill-opacity=".12"/>
+  <g filter="url(#shadow)">
+    <rect x="292" y="150" width="376" height="376" rx="28" fill="#111827" stroke="white" stroke-opacity=".14"/>
+    <g opacity=".78">
+      <rect x="322" y="180" width="70" height="70" rx="16" fill="white" fill-opacity=".08"/>
+      <rect x="400" y="180" width="70" height="70" rx="16" fill="#D8FFF1"/>
+      <rect x="478" y="180" width="70" height="70" rx="16" fill="white" fill-opacity=".08"/>
+      <rect x="556" y="180" width="70" height="70" rx="16" fill="#BFF7FF"/>
+      <rect x="322" y="258" width="70" height="70" rx="16" fill="#78A7FF"/>
+      <rect x="400" y="258" width="70" height="70" rx="16" fill="white" fill-opacity=".08"/>
+      <rect x="478" y="258" width="70" height="70" rx="16" fill="#FFE36D"/>
+      <rect x="556" y="258" width="70" height="70" rx="16" fill="white" fill-opacity=".08"/>
+      <rect x="322" y="336" width="70" height="70" rx="16" fill="white" fill-opacity=".08"/>
+      <rect x="400" y="336" width="70" height="70" rx="16" fill="#FF8CC6"/>
+      <rect x="478" y="336" width="70" height="70" rx="16" fill="white" fill-opacity=".08"/>
+      <rect x="556" y="336" width="70" height="70" rx="16" fill="#58FFC9"/>
+      <rect x="322" y="414" width="70" height="70" rx="16" fill="#A58BFF"/>
+      <rect x="400" y="414" width="70" height="70" rx="16" fill="white" fill-opacity=".08"/>
+      <rect x="478" y="414" width="70" height="70" rx="16" fill="#FFB166"/>
+      <rect x="556" y="414" width="70" height="70" rx="16" fill="white" fill-opacity=".08"/>
+    </g>
+    <text x="422" y="225" fill="#123229" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="900" text-anchor="middle">2</text>
+    <text x="591" y="225" fill="#102E39" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="900" text-anchor="middle">4</text>
+    <text x="357" y="303" fill="#071F42" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="900" text-anchor="middle">16</text>
+    <text x="513" y="303" fill="#382D05" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="900" text-anchor="middle">512</text>
+    <text x="435" y="381" fill="#3C1027" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="900" text-anchor="middle">128</text>
+    <text x="591" y="381" fill="#063125" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="900" text-anchor="middle">2048</text>
+    <text x="357" y="459" fill="#1A103F" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="900" text-anchor="middle">32</text>
+    <text x="513" y="459" fill="#3B1C07" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="900" text-anchor="middle">256</text>
+  </g>
+  <text x="54" y="92" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="850" letter-spacing="-1">Number Merge</text>
+  <text x="58" y="136" fill="#A9B4C4" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Slide tiles. Merge numbers. Chase 2048.</text>
+  <defs>
+    <linearGradient id="bg" x1="94" y1="48" x2="826" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#141B2B"/>
+      <stop offset=".53" stop-color="#0A1020"/>
+      <stop offset="1" stop-color="#050609"/>
+    </linearGradient>
+    <filter id="shadow" x="252" y="122" width="456" height="464" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="16"/>
+      <feGaussianBlur stdDeviation="20"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.38 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+    </filter>
+  </defs>
+</svg>

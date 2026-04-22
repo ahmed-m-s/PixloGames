@@ -1,0 +1,29 @@
+<svg width="960" height="600" viewBox="0 0 960 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="960" height="600" fill="#08090D"/>
+  <path d="M0 0H960V600H0V0Z" fill="url(#bg)"/>
+  <circle cx="782" cy="104" r="92" fill="#52F2B5" fill-opacity=".16"/>
+  <circle cx="187" cy="148" r="118" fill="#FF6B6B" fill-opacity=".13"/>
+  <path d="M0 448C116 407 213 395 326 410C446 426 534 467 662 458C777 450 858 405 960 378V600H0V448Z" fill="#10131C"/>
+  <path d="M0 495H960" stroke="#FFFFFF" stroke-opacity=".16" stroke-width="8"/>
+  <path d="M42 516H140M220 516H336M420 516H538M620 516H740M812 516H916" stroke="#52F2B5" stroke-opacity=".58" stroke-width="8" stroke-linecap="round"/>
+  <rect x="180" y="306" width="82" height="110" rx="18" fill="#52F2B5"/>
+  <circle cx="219" cy="282" r="36" fill="#EAFEF6"/>
+  <path d="M193 374L142 426" stroke="#EAFEF6" stroke-width="18" stroke-linecap="round"/>
+  <path d="M248 382L301 435" stroke="#EAFEF6" stroke-width="18" stroke-linecap="round"/>
+  <path d="M250 328L322 304" stroke="#EAFEF6" stroke-width="16" stroke-linecap="round"/>
+  <path d="M188 332L126 302" stroke="#EAFEF6" stroke-width="16" stroke-linecap="round"/>
+  <rect x="586" y="358" width="72" height="92" rx="12" fill="#FF6B6B"/>
+  <rect x="700" y="326" width="96" height="124" rx="12" fill="#FFD166"/>
+  <rect x="827" y="382" width="54" height="68" rx="12" fill="#52F2B5"/>
+  <path d="M441 232H826" stroke="#FFFFFF" stroke-opacity=".09" stroke-width="2"/>
+  <path d="M453 274H764" stroke="#FFFFFF" stroke-opacity=".08" stroke-width="2"/>
+  <text x="56" y="98" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="800" letter-spacing="-1">Endless Runner</text>
+  <text x="58" y="142" fill="#B8C0CC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Jump. Dodge. Survive.</text>
+  <defs>
+    <linearGradient id="bg" x1="89" y1="42" x2="843" y2="561" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#141826"/>
+      <stop offset=".52" stop-color="#0B1020"/>
+      <stop offset="1" stop-color="#050609"/>
+    </linearGradient>
+  </defs>
+</svg>

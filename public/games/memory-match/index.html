@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Memory Match is a polished HTML5 card matching game for PixloGames."
+    />
+    <title>Memory Match | PixloGames</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Memory Match game">
+      <section class="game-card">
+        <header class="game-header">
+          <div>
+            <p class="eyebrow">PixloGames</p>
+            <h1>Memory Match</h1>
+          </div>
+          <div class="stats" aria-label="Current game stats">
+            <div class="stat">
+              <span class="stat-label">Moves</span>
+              <strong id="moveCount">0</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Time</span>
+              <strong id="timer">0:00</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Best</span>
+              <strong id="bestTime">--</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="board-wrap" aria-live="polite">
+          <div class="board" id="board" aria-label="Memory card board"></div>
+
+          <div class="overlay is-visible" id="startScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">Match every pair</p>
+              <h2>Flip two cards. Remember the symbols. Clear the board.</h2>
+              <p>
+                Finish the 4x4 board with fewer moves and a faster time to earn a stronger rating.
+              </p>
+              <button class="game-button" id="startButton" type="button">Start Game</button>
+              <p class="hint">Mouse click or tap to flip cards</p>
+            </div>
+          </div>
+
+          <div class="overlay" id="completeScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">Board complete</p>
+              <h2 id="completeTitle">Great Match!</h2>
+              <div class="stars" id="starRating" aria-label="Star rating">★★★</div>
+              <p id="completeSummary">You matched every pair.</p>
+              <div class="result-grid">
+                <div>
+                  <span>Moves</span>
+                  <strong id="finalMoves">0</strong>
+                </div>
+                <div>
+                  <span>Time</span>
+                  <strong id="finalTime">0:00</strong>
+                </div>
+                <div>
+                  <span>Best</span>
+                  <strong id="finalBest">--</strong>
+                </div>
+              </div>
+              <button class="game-button" id="restartButton" type="button">Play Again</button>
+            </div>
+          </div>
+        </section>
+
+        <footer class="game-footer">
+          <span>4x4 classic board</span>
+          <span>Fastest completion is saved locally</span>
+        </footer>
+      </section>
+    </main>
+
+    <script src="./game.js" defer></script>
+  </body>
+</html>

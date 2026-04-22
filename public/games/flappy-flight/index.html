@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Flappy Flight is a polished lightweight HTML5 arcade game for PixloGames."
+    />
+    <title>Flappy Flight | PixloGames</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Flappy Flight game">
+      <section class="game-card">
+        <header class="top-bar">
+          <div>
+            <p class="eyebrow">PixloGames</p>
+            <h1>Flappy Flight</h1>
+          </div>
+          <div class="score-wrap" aria-label="Current flight stats">
+            <div>
+              <span>Score</span>
+              <strong id="scoreValue">0</strong>
+            </div>
+            <div>
+              <span>Best</span>
+              <strong id="bestValue">0</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="canvas-frame" id="gameFrame" tabindex="0">
+          <canvas
+            id="gameCanvas"
+            width="960"
+            height="540"
+            aria-label="Flappy Flight canvas"
+            tabindex="-1"
+          ></canvas>
+          <div class="hud-pill" id="playHint">Press Space or ↑ to flap</div>
+
+          <div class="screen-overlay" id="startScreen">
+            <div class="screen-panel">
+              <p class="eyebrow">Tap, flap, thread the gap</p>
+              <h2>Stay airborne through clean pipe gates.</h2>
+              <p>Flap with a key, click, or tap. The flight gets faster as your score grows.</p>
+              <button class="game-button" id="startButton" type="button">Start Game</button>
+              <span class="control-note">Space, ↑, click, or tap to flap.</span>
+            </div>
+          </div>
+
+          <div class="screen-overlay hidden" id="gameOverScreen">
+            <div class="screen-panel">
+              <p class="eyebrow">Flight ended</p>
+              <h2>Game Over</h2>
+              <div class="result-grid">
+                <div>
+                  <span>Score</span>
+                  <strong id="finalScore">0</strong>
+                </div>
+                <div>
+                  <span>Best</span>
+                  <strong id="finalBest">0</strong>
+                </div>
+              </div>
+              <button class="game-button" id="restartButton" type="button">Play Again</button>
+            </div>
+          </div>
+        </section>
+
+        <footer class="bottom-bar">
+          <span>Responsive canvas</span>
+          <span>Best score saved locally</span>
+        </footer>
+      </section>
+    </main>
+
+    <script src="./game.js" defer></script>
+  </body>
+</html>

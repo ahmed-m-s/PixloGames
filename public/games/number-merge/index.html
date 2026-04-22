@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Number Merge is a polished 2048-style HTML5 puzzle game for PixloGames."
+    />
+    <title>Number Merge | PixloGames</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Number Merge game">
+      <section class="game-card">
+        <header class="game-header">
+          <div>
+            <p class="eyebrow">PixloGames</p>
+            <h1>Number Merge</h1>
+          </div>
+          <div class="stats" aria-label="Current game stats">
+            <div class="stat">
+              <span class="stat-label">Score</span>
+              <strong id="score">0</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Best</span>
+              <strong id="bestScore">0</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Goal</span>
+              <strong id="goalValue">2048</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="play-area">
+          <div class="board-panel">
+            <div class="board" id="board" aria-label="Number Merge board" tabindex="0">
+              <div class="grid" id="grid" aria-hidden="true"></div>
+              <div class="tile-layer" id="tileLayer" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <aside class="side-panel">
+            <div class="panel-block">
+              <p class="panel-title">How to play</p>
+              <p class="panel-copy">
+                Slide all tiles in one direction. Matching numbers merge into a higher value.
+              </p>
+              <div class="control-list">
+                <span>Arrow keys</span>
+                <span>WASD</span>
+                <span>Swipe</span>
+              </div>
+            </div>
+
+            <div class="panel-block">
+              <p class="panel-title">Run status</p>
+              <p class="panel-copy" id="statusText">
+                Start a run and merge toward 2048 without filling the board.
+              </p>
+            </div>
+          </aside>
+
+          <div class="overlay is-visible" id="startScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">Slide, merge, survive</p>
+              <h2>Merge matching numbers and chase a bigger board.</h2>
+              <p>
+                Use arrow keys, WASD, or swipe gestures. A new tile appears after every valid move.
+              </p>
+              <button class="game-button" data-action="start" id="startButton" type="button">
+                Start Game
+              </button>
+              <p class="hint">Reach 2048 for a milestone cue, then keep playing.</p>
+            </div>
+          </div>
+
+          <div class="overlay" id="gameOverScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">No moves left</p>
+              <h2>Game Over</h2>
+              <p id="gameOverSummary">Your final score was 0.</p>
+              <div class="result-grid">
+                <div>
+                  <span>Score</span>
+                  <strong id="finalScore">0</strong>
+                </div>
+                <div>
+                  <span>Best</span>
+                  <strong id="finalBest">0</strong>
+                </div>
+              </div>
+              <button class="game-button" data-action="start" id="restartButton" type="button">
+                Play Again
+              </button>
+            </div>
+          </div>
+
+          <div class="milestone" id="milestone" role="status" aria-live="polite">
+            <strong>2048 reached</strong>
+            <span>Keep merging for a higher score.</span>
+          </div>
+        </section>
+
+        <footer class="game-footer">
+          <span>4x4 merge board</span>
+          <span>Best score is saved locally</span>
+        </footer>
+      </section>
+    </main>
+
+    <script src="./game.js" defer></script>
+  </body>
+</html>

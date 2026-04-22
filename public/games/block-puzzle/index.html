@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Block Puzzle is a polished HTML5 puzzle game for PixloGames."
+    />
+    <title>Block Puzzle | PixloGames</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Block Puzzle game">
+      <section class="game-card">
+        <header class="game-header">
+          <div>
+            <p class="eyebrow">PixloGames</p>
+            <h1>Block Puzzle</h1>
+          </div>
+          <div class="stats" aria-label="Current game stats">
+            <div class="stat">
+              <span class="stat-label">Score</span>
+              <strong id="score">0</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Best</span>
+              <strong id="bestScore">0</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Combo</span>
+              <strong id="comboText">x1</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="play-area">
+          <div class="board-panel">
+            <div class="board" id="board" aria-label="Block puzzle board"></div>
+          </div>
+
+          <aside class="side-panel">
+            <div class="panel-block">
+              <p class="panel-title">Pieces</p>
+              <p class="panel-copy">Select a piece, then tap the board to place it.</p>
+              <div class="piece-tray" id="pieceTray" aria-label="Available pieces"></div>
+            </div>
+
+            <div class="panel-block">
+              <p class="panel-title">Placement</p>
+              <p class="panel-copy" id="statusText">
+                Complete full rows or columns to clear space and build your score.
+              </p>
+            </div>
+          </aside>
+
+          <div class="overlay is-visible" id="startScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">Clear lines, stay alive</p>
+              <h2>Place blocks. Complete rows and columns. Keep the board open.</h2>
+              <p>
+                You get three pieces at a time. Use all three to receive a fresh set. The run ends
+                when no remaining piece can fit.
+              </p>
+              <button class="game-button" id="startButton" type="button">Start Game</button>
+              <p class="hint">Mouse click or tap to play</p>
+            </div>
+          </div>
+
+          <div class="overlay" id="gameOverScreen">
+            <div class="overlay-panel">
+              <p class="eyebrow">No moves left</p>
+              <h2>Game Over</h2>
+              <p id="gameOverSummary">Your final score was 0.</p>
+              <div class="result-grid">
+                <div>
+                  <span>Score</span>
+                  <strong id="finalScore">0</strong>
+                </div>
+                <div>
+                  <span>Best</span>
+                  <strong id="finalBest">0</strong>
+                </div>
+              </div>
+              <button class="game-button" id="restartButton" type="button">Play Again</button>
+            </div>
+          </div>
+        </section>
+
+        <footer class="game-footer">
+          <span>8x8 board</span>
+          <span>New pieces arrive after all three are placed</span>
+        </footer>
+      </section>
+    </main>
+
+    <script src="./game.js" defer></script>
+  </body>
+</html>

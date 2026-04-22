@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Color Sort thumbnail</title>
+  <desc id="desc">Color sorting tubes filled with bright liquid stacks.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#151a2d"/>
+      <stop offset="1" stop-color="#05070c"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="420" rx="32" fill="url(#bg)"/>
+  <circle cx="112" cy="92" r="120" fill="#5ef2b6" opacity=".13"/>
+  <circle cx="516" cy="332" r="150" fill="#a99bff" opacity=".13"/>
+  <g transform="translate(142 72)" stroke="#ffffff" stroke-opacity=".18" stroke-width="5">
+    <g>
+      <path d="M0 0h92v238a46 46 0 0 1-92 0z" fill="rgba(255,255,255,.06)"/>
+      <rect x="12" y="154" width="68" height="48" rx="12" fill="#5ef2b6" stroke="none"/>
+      <rect x="12" y="102" width="68" height="48" rx="12" fill="#75d8ff" stroke="none"/>
+      <rect x="12" y="50" width="68" height="48" rx="12" fill="#ffd166" stroke="none"/>
+    </g>
+    <g transform="translate(132 0)">
+      <path d="M0 0h92v238a46 46 0 0 1-92 0z" fill="rgba(255,255,255,.06)"/>
+      <rect x="12" y="154" width="68" height="48" rx="12" fill="#ff6b8a" stroke="none"/>
+      <rect x="12" y="102" width="68" height="48" rx="12" fill="#a99bff" stroke="none"/>
+      <rect x="12" y="50" width="68" height="48" rx="12" fill="#5ef2b6" stroke="none"/>
+    </g>
+    <g transform="translate(264 0)">
+      <path d="M0 0h92v238a46 46 0 0 1-92 0z" fill="rgba(255,255,255,.06)"/>
+      <rect x="12" y="154" width="68" height="48" rx="12" fill="#75d8ff" stroke="none"/>
+      <rect x="12" y="102" width="68" height="48" rx="12" fill="#ffd166" stroke="none"/>
+    </g>
+  </g>
+  <text x="44" y="370" fill="#f8fbff" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="900">Color Sort</text>
+  <text x="46" y="394" fill="#aab5c5" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">Pour every color into place</text>
+</svg>

@@ -1,0 +1,12 @@
+.next
+node_modules
+storage/media
+backups
+*.tsbuildinfo
+.env
+.env.local
+.env.development
+.env.production
+npm-debug.log*
+Dockerfile
+deployment/templates

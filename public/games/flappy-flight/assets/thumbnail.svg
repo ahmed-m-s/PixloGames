@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Flappy Flight thumbnail</title>
+  <desc id="desc">A small glowing bird flying between green pipe gates.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#14213a"/>
+      <stop offset="1" stop-color="#05070c"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="640" height="420" rx="32" fill="url(#bg)"/>
+  <circle cx="110" cy="92" r="120" fill="#67d9ff" opacity=".14"/>
+  <circle cx="512" cy="330" r="150" fill="#62ffae" opacity=".12"/>
+  <g fill="#62ffae">
+    <rect x="438" y="0" width="72" height="150" rx="14"/>
+    <rect x="424" y="136" width="100" height="24" rx="10"/>
+    <rect x="438" y="270" width="72" height="150" rx="14"/>
+    <rect x="424" y="260" width="100" height="24" rx="10"/>
+  </g>
+  <g transform="translate(208 202) rotate(-8)" filter="url(#glow)">
+    <rect x="-50" y="-34" width="100" height="68" rx="30" fill="#ffd166"/>
+    <rect x="-14" y="8" width="58" height="20" rx="10" fill="#62ffae"/>
+    <circle cx="22" cy="-12" r="13" fill="#f8fbff"/>
+    <circle cx="26" cy="-12" r="5" fill="#061018"/>
+    <path d="M50-5l38 15-38 15z" fill="#ff746b"/>
+  </g>
+  <path d="M0 342h640" stroke="#62ffae" stroke-opacity=".7" stroke-width="4"/>
+  <text x="44" y="372" fill="#f8fbff" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="900">Flappy Flight</text>
+  <text x="46" y="396" fill="#a6b1c2" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">Tap to thread the gates</text>
+</svg>
