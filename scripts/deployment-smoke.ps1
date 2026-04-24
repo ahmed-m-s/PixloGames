@@ -126,6 +126,33 @@ function Assert-Equal {
   }
 }
 
+function Get-HeaderValue {
+  param(
+    [string]$Headers,
+    [string]$Name
+  )
+
+  $match = [regex]::Match($Headers, "(?im)^$([regex]::Escape($Name)):\s*(.+)$")
+
+  if ($match.Success) {
+    return $match.Groups[1].Value.Trim()
+  }
+
+  return ""
+}
+
+function Test-InternalSessionCookie {
+  param([string]$CookieFile)
+
+  if (!(Test-Path -LiteralPath $CookieFile)) {
+    return $false
+  }
+
+  $cookieContent = Get-Content -Raw -LiteralPath $CookieFile
+
+  return $cookieContent -match '(^|\s)(__Host-)?pixlo_internal_session(\s|$)'
+}
+
 function Assert-ReleaseSignals {
   param(
     [object]$Health,
@@ -199,14 +226,23 @@ if ($ReleaseVerify) {
 
 if ($AdminEmail -and $AdminPassword) {
   $cookieFile = Join-Path $env:TEMP "pixlogames-smoke-cookies.txt"
+  $signInHeadersFile = Join-Path $env:TEMP "pixlogames-smoke-signin-headers.txt"
   Remove-Item -LiteralPath $cookieFile -ErrorAction SilentlyContinue
+  Remove-Item -LiteralPath $signInHeadersFile -ErrorAction SilentlyContinue
 
-  $signInStatus = & curl.exe -s -o NUL -w "%{http_code}" -c $cookieFile -X POST `
+  $signInStatus = & curl.exe -s -o NUL -D $signInHeadersFile -w "%{http_code}" -c $cookieFile -X POST `
     -d "email=$AdminEmail" `
     -d "password=$AdminPassword" `
     -d "next=/internal/readiness" `
     --max-time 30 `
     "$BaseUrl/api/internal/auth/sign-in"
+  $signInHeaders = if (Test-Path -LiteralPath $signInHeadersFile) {
+    Get-Content -Raw -LiteralPath $signInHeadersFile
+  } else {
+    ""
+  }
+  $signInLocation = Get-HeaderValue -Headers $signInHeaders -Name "Location"
+  $hasInternalSessionCookie = Test-InternalSessionCookie -CookieFile $cookieFile
 
   $results += [PSCustomObject]@{
     Method = "POST"
@@ -217,6 +253,10 @@ if ($AdminEmail -and $AdminPassword) {
 
   if ($signInStatus -ne "303") {
     $failures.Add("POST /api/internal/auth/sign-in expected 303 but received $signInStatus")
+  } elseif ($signInLocation -match '/internal/sign-in\?error=invalid') {
+    $failures.Add("POST /api/internal/auth/sign-in redirected back to sign-in with invalid credentials. Check PIXLO_SMOKE_ADMIN_EMAIL and PIXLO_SMOKE_ADMIN_PASSWORD.")
+  } elseif (!$hasInternalSessionCookie) {
+    $failures.Add("POST /api/internal/auth/sign-in returned 303 but no internal session cookie was captured. The authenticated follow-up requests would not carry session state.")
   } else {
     $results += Invoke-SmokeRoute -Path "/internal/readiness" -Expected "200" -CookieFile $cookieFile
     $results += Invoke-SmokeRoute -Path "/internal/diagnostics" -Expected "200" -CookieFile $cookieFile
@@ -225,6 +265,7 @@ if ($AdminEmail -and $AdminPassword) {
   }
 
   Remove-Item -LiteralPath $cookieFile -Force -ErrorAction SilentlyContinue
+  Remove-Item -LiteralPath $signInHeadersFile -Force -ErrorAction SilentlyContinue
 } else {
   Write-Host "Skipping authenticated smoke checks. Set PIXLO_SMOKE_ADMIN_EMAIL and PIXLO_SMOKE_ADMIN_PASSWORD to include them."
 
