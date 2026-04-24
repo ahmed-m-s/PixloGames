@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --webpack",
     "start": "next start",
-    "build": "next build",
+    "build": "npm run db:generate && next build",
     "lint": "eslint .",
     "a11y:lint": "eslint app components --max-warnings=0",
     "typecheck": "tsc --noEmit",
