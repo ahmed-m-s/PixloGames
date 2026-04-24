@@ -13,9 +13,9 @@ type GamePlayerProps = {
 };
 
 const playerViewportClasses: Record<Game['orientation'], string> = {
-  landscape: 'aspect-[16/10] min-h-[320px] sm:aspect-video lg:min-h-[560px]',
-  portrait: 'min-h-[620px] sm:min-h-[700px] lg:min-h-[760px]',
-  responsive: 'min-h-[600px] sm:min-h-[680px] lg:min-h-[760px] xl:min-h-[820px]'
+  landscape: 'game-player-viewport--landscape',
+  portrait: 'game-player-viewport--portrait',
+  responsive: 'game-player-viewport--responsive'
 };
 
 function escapeHtml(value: string) {
@@ -253,7 +253,8 @@ export function GamePlayer({ game, playRequestKey = 0 }: GamePlayerProps) {
 
   return (
     <div
-      className="relative flex min-h-full flex-col overflow-hidden rounded-lg border border-white/10 bg-black shadow-card"
+      className="game-player-shell relative flex min-h-full w-full min-w-0 max-w-full flex-col overflow-hidden rounded-lg border border-white/10 bg-black shadow-card"
+      data-player-active={hasStarted ? 'true' : 'false'}
       data-testid="game-player"
       id="play"
       ref={containerRef}
@@ -292,7 +293,7 @@ export function GamePlayer({ game, playRequestKey = 0 }: GamePlayerProps) {
       </div>
       <div
         className={cn(
-          'game-player-viewport relative min-h-0 flex-1 overflow-hidden bg-black',
+          'game-player-viewport relative min-h-0 w-full min-w-0 max-w-full flex-1 overflow-hidden bg-black',
           playerViewportClasses[game.orientation]
         )}
         ref={viewportRef}
@@ -302,7 +303,7 @@ export function GamePlayer({ game, playRequestKey = 0 }: GamePlayerProps) {
             <iframe
               allow={framePolicy.allow}
               allowFullScreen={framePolicy.allowFullscreen}
-              className="absolute inset-0 h-full w-full focus:outline-none"
+              className="game-player-frame absolute inset-0 block h-full w-full max-w-full border-0 focus:outline-none"
               data-testid="game-player-frame"
               loading="eager"
               onError={() => {
@@ -334,7 +335,7 @@ export function GamePlayer({ game, playRequestKey = 0 }: GamePlayerProps) {
             <iframe
               allow={framePolicy.allow}
               allowFullScreen={framePolicy.allowFullscreen}
-              className="absolute inset-0 h-full w-full focus:outline-none"
+              className="game-player-frame absolute inset-0 block h-full w-full max-w-full border-0 focus:outline-none"
               data-testid="game-player-frame"
               onError={() => {
                 setIsFrameLoading(false);
