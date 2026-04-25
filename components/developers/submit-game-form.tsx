@@ -29,7 +29,8 @@ const categories = [
   'Multiplayer',
   'Shooting',
   'Sports',
-  'Arcade'
+  'Arcade',
+  'Management'
 ];
 
 const platformOptions = [

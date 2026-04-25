@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Panda Mart is a cozy PixloGames HTML5 shop management game."
+    />
+    <title>Panda Mart | PixloGames</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Panda Mart game">
+      <section class="game-card">
+        <header class="top-bar">
+          <div>
+            <p class="eyebrow">Pixlo Original</p>
+            <h1>Panda Mart</h1>
+          </div>
+          <div class="top-actions">
+            <button class="small-button" id="pauseButton" type="button">Pause</button>
+            <button class="small-button" id="restartButton" type="button">Restart</button>
+          </div>
+        </header>
+
+        <section class="game-body">
+          <div class="stage" id="gameStage" tabindex="0">
+            <canvas
+              id="gameCanvas"
+              width="960"
+              height="600"
+              aria-label="Top-down Panda Mart shop"
+            ></canvas>
+
+            <div class="screen-overlay is-visible" id="startScreen">
+              <div class="screen-panel">
+                <p class="eyebrow">Bamboo shop shift</p>
+                <h2>Stock shelves. Serve guests. Upgrade the mart.</h2>
+                <p>
+                  Collect bamboo, fill the shelf, and keep forest customers moving through your
+                  cozy little shop.
+                </p>
+                <button class="game-button" id="startButton" type="button">Start Shift</button>
+                <span class="control-note">
+                  Move with WASD or arrows. Press E or Space to interact.
+                </span>
+              </div>
+            </div>
+
+            <div class="screen-overlay" id="pauseScreen">
+              <div class="screen-panel">
+                <p class="eyebrow">Shift paused</p>
+                <h2>Take a bamboo break.</h2>
+                <p>Press P, Escape, or the pause button to continue.</p>
+                <button class="game-button" id="resumeButton" type="button">Resume</button>
+              </div>
+            </div>
+
+            <div class="touch-controls" aria-label="Touch controls">
+              <div class="touch-pad" aria-label="Move panda">
+                <button data-dir="up" type="button">Up</button>
+                <button data-dir="left" type="button">Left</button>
+                <button data-dir="down" type="button">Down</button>
+                <button data-dir="right" type="button">Right</button>
+              </div>
+              <button class="interact-button" id="touchInteractButton" type="button">
+                Interact
+              </button>
+            </div>
+          </div>
+
+          <aside class="side-panel" aria-label="Panda Mart status and upgrades">
+            <section class="hud-grid" aria-label="Current shop stats">
+              <div class="stat">
+                <span>Coins</span>
+                <strong id="coinsValue">0</strong>
+              </div>
+              <div class="stat">
+                <span>Carry</span>
+                <strong id="carryValue">0 / 3</strong>
+              </div>
+              <div class="stat">
+                <span>Shelf</span>
+                <strong id="shelfValue">0 / 5</strong>
+              </div>
+              <div class="stat">
+                <span>Guests</span>
+                <strong id="customersValue">0</strong>
+              </div>
+            </section>
+
+            <section class="status-card">
+              <p class="eyebrow">Status</p>
+              <p id="statusText">Open the mart to begin.</p>
+            </section>
+
+            <section class="upgrade-card" aria-label="Shop upgrades">
+              <div class="upgrade-heading">
+                <p class="eyebrow">Upgrades</p>
+                <span id="levelsValue">Carry 1 | Speed 1 | Shelf 1</span>
+              </div>
+
+              <button class="upgrade-button" data-upgrade="carry" type="button">
+                <span>
+                  <strong>Carry Capacity</strong>
+                  <small>Hold more bamboo per trip.</small>
+                </span>
+                <b id="carryCost">30</b>
+              </button>
+              <button class="upgrade-button" data-upgrade="speed" type="button">
+                <span>
+                  <strong>Walk Speed</strong>
+                  <small>Move faster around the mart.</small>
+                </span>
+                <b id="speedCost">40</b>
+              </button>
+              <button class="upgrade-button" data-upgrade="shelf" type="button">
+                <span>
+                  <strong>Shelf Capacity</strong>
+                  <small>Stock more bamboo for guests.</small>
+                </span>
+                <b id="shelfCost">35</b>
+              </button>
+            </section>
+
+            <section class="tips-card">
+              <p class="eyebrow">Controls</p>
+              <ul>
+                <li>Move with WASD or Arrow Keys.</li>
+                <li>Press E or Space near bamboo or the shelf.</li>
+                <li>Use touch controls on phones and tablets.</li>
+              </ul>
+            </section>
+          </aside>
+        </section>
+      </section>
+    </main>
+
+    <script src="./game.js" defer></script>
+  </body>
+</html>
