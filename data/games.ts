@@ -57,6 +57,12 @@ export const categories: CategoryInfo[] = [
     slug: 'arcade',
     description: 'Readable rules, deep replay loops.',
     accent: 'brand'
+  },
+  {
+    name: 'Management',
+    slug: 'management',
+    description: 'Shop, idle, and resource games built around smart upgrades.',
+    accent: 'sun'
   }
 ];
 
@@ -506,6 +512,44 @@ export const games: Game[] = prepareGameContent([
     seoTitle: 'Brick Breaker - Play a Fast HTML5 Arcade Game',
     seoDescription:
       'Play Brick Breaker on PixloGames. Move the paddle, launch the ball, clear bricks, and chase your best score in a lightweight HTML5 arcade game.'
+  }),
+  createLocalHtml5Game({
+    slug: 'panda-mart',
+    title: 'Panda Mart',
+    shortDescription:
+      'Run a cozy bamboo shop, stock shelves, serve guests, and upgrade your tiny forest mart.',
+    description:
+      'Run a cozy bamboo shop, collect fresh bamboo, stock shelves, help forest customers check out, and spend coins on upgrades that make each shift smoother.',
+    category: 'Management',
+    tags: ['Management', 'Idle', 'Cute', 'Panda', 'Shop', 'Casual'],
+    rating: 4.7,
+    plays: 4300,
+    isTrending: true,
+    isEditorsPick: true,
+    controls: {
+      keyboard: ['WASD', 'Arrow keys', 'E', 'Space'],
+      mouse: true,
+      touch: true
+    },
+    instructions: [
+      'Move with WASD or Arrow Keys.',
+      'Press E or Space near the bamboo garden to collect stock.',
+      'Press E or Space near the shelf to restock it for customers.',
+      'Use coins from sales to upgrade carry capacity, walk speed, and shelf capacity.'
+    ],
+    difficulty: 'easy',
+    orientation: 'responsive',
+    releaseDate: '2026-04-25',
+    featuredWeight: 142,
+    featuredPriority: 142,
+    collectionIds: [
+      'collection-new-releases',
+      'collection-editors-picks',
+      'collection-trending-now'
+    ],
+    seoTitle: 'Panda Mart - Play a Cozy HTML5 Shop Management Game',
+    seoDescription:
+      'Play Panda Mart on PixloGames. Collect bamboo, stock shelves, serve forest customers, and upgrade a tiny mobile-ready shop management game.'
   }),
   {
     id: 'game-neon-driftline',

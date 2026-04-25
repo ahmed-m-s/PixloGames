@@ -10,6 +10,7 @@ export const gameCollections: GameCollection[] = [
     visibility: 'public',
     placement: ['homepage', 'browse'],
     gameIds: [
+      'game-panda-mart',
       'game-flappy-flight',
       'game-color-sort',
       'game-2048',
@@ -78,6 +79,7 @@ export const gameCollections: GameCollection[] = [
     visibility: 'public',
     placement: ['homepage', 'browse'],
     gameIds: [
+      'game-panda-mart',
       'game-color-sort',
       'game-tic-tac-toe',
       'game-2048',
@@ -106,6 +108,7 @@ export const gameCollections: GameCollection[] = [
     visibility: 'public',
     placement: ['homepage', 'browse'],
     gameIds: [
+      'game-panda-mart',
       'game-tic-tac-toe',
       'game-flappy-flight',
       'game-color-sort',
