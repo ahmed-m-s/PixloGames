@@ -68,8 +68,7 @@ button {
   border: 1px solid var(--line);
   border-radius: 8px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 244, 207, 0.48)),
-    var(--panel);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 244, 207, 0.48)), var(--panel);
   box-shadow: var(--shadow);
 }
 
