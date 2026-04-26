@@ -37,6 +37,24 @@ describe('game embed trust boundary', () => {
     expect(getGameEmbedSecurityIssues(game)).toEqual([]);
   });
 
+  it('trusts first-party local packages under the non-route playable asset path', () => {
+    const game = makeGame({
+      slug: 'panda-mart',
+      sourceOrigin: 'first_party',
+      embedType: 'html5-package',
+      embedUrl: '/playable-games/panda-mart/index.html',
+      source: {
+        mode: 'embedded',
+        embedType: 'html5-package',
+        url: '/playable-games/panda-mart/index.html',
+        message: 'Playable HTML5 embed'
+      }
+    });
+
+    expect(getGameEmbedTrustLevel(game)).toBe('trusted-first-party-local');
+    expect(getGameEmbedSecurityIssues(game)).toEqual([]);
+  });
+
   it('does not grant same-origin privileges to developer-submitted embeds', () => {
     const game = makeGame({
       sourceOrigin: 'developer_submission',
