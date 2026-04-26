@@ -50,6 +50,7 @@ describe('Panda Mart catalog integration', () => {
       isTrending: true
     });
     expect(game.embedUrl).toBe('/playable-games/panda-mart/index.html');
+    expect(game.embedUrl).not.toBe('/games/panda-mart/index.html');
     expect(game.source).toMatchObject({
       mode: 'embedded',
       embedType: 'html5-package',

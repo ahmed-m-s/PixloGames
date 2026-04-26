@@ -1,13 +1,58 @@
-import { categories } from '@/data/games';
-import { getGameBySlugFromRepository, listGames } from '@/lib/repositories/content-repository';
+import { categories, games as canonicalGames } from '@/data/games';
+import {
+  getGameBySlugFromRepository,
+  listGames as listGamesFromRepository,
+  type GameQuery
+} from '@/lib/repositories/content-repository';
 import type { Game, GameCategory } from '@/types/game';
 
 export function getCategoryBySlug(slug: string) {
   return categories.find((category) => category.slug === slug);
 }
 
+function canUseCanonicalFallback(game: Game, query: GameQuery = {}) {
+  if (query.includeInternal) {
+    return true;
+  }
+
+  return game.visibility === (query.visibility ?? 'public');
+}
+
+function sortCanonicalFallbackGames(a: Game, b: Game) {
+  return (
+    b.featuredPriority - a.featuredPriority || b.plays - a.plays || a.title.localeCompare(b.title)
+  );
+}
+
+function mergeCanonicalFallbackGames(repositoryGames: Game[], query: GameQuery = {}) {
+  const gamesById = new Set(repositoryGames.map((game) => game.id));
+  const gamesBySlug = new Set(repositoryGames.map((game) => game.slug));
+  const missingCanonicalGames = canonicalGames
+    .filter(
+      (game) =>
+        canUseCanonicalFallback(game, query) &&
+        !gamesById.has(game.id) &&
+        !gamesBySlug.has(game.slug)
+    )
+    .sort(sortCanonicalFallbackGames);
+
+  return [...repositoryGames, ...missingCanonicalGames];
+}
+
+export async function listGames(query: GameQuery = {}) {
+  const repositoryGames = await listGamesFromRepository(query);
+
+  return mergeCanonicalFallbackGames(repositoryGames, query);
+}
+
 export async function getGameBySlug(slug: string) {
-  return getGameBySlugFromRepository(slug);
+  const repositoryGame = await getGameBySlugFromRepository(slug);
+
+  if (repositoryGame) {
+    return repositoryGame;
+  }
+
+  return canonicalGames.find((game) => game.slug === slug && canUseCanonicalFallback(game));
 }
 
 export async function getGamesByIds(ids: string[]) {

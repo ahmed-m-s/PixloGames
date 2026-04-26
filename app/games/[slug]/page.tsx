@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { GameDetail } from '@/components/game/game-detail';
-import { getGameBySlug, getRelatedGames } from '@/lib/games';
+import { getGameBySlug, getRelatedGames, listGames } from '@/lib/games';
 import { createPageMetadata } from '@/lib/metadata';
-import { listGames } from '@/lib/repositories/content-repository';
 
 type GamePageProps = {
   params: Promise<{

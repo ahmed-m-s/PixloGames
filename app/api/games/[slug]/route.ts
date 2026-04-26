@@ -1,5 +1,5 @@
 import { apiError, apiOk } from '@/lib/api-response';
-import { getGameBySlugFromRepository } from '@/lib/repositories/content-repository';
+import { getGameBySlug } from '@/lib/games';
 
 type GameApiRouteContext = {
   params: Promise<{
@@ -9,7 +9,7 @@ type GameApiRouteContext = {
 
 export async function GET(_request: Request, { params }: GameApiRouteContext) {
   const { slug } = await params;
-  const game = await getGameBySlugFromRepository(slug);
+  const game = await getGameBySlug(slug);
 
   if (!game) {
     return apiError('game_not_found', 'Game not found.', 404);

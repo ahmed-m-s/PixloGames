@@ -8,8 +8,8 @@ import { Pill } from '@/components/ui/pill';
 import { ResponsiveGrid } from '@/components/ui/responsive-grid';
 import { categories } from '@/data/games';
 import { browseGames, getTagsFromGames, parseBrowseState } from '@/lib/browse';
+import { listGames } from '@/lib/games';
 import { createPageMetadata } from '@/lib/metadata';
-import { listGames } from '@/lib/repositories/content-repository';
 import type { BrowseSearchParams } from '@/types/browse';
 
 export const metadata: Metadata = createPageMetadata(
