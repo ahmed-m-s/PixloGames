@@ -515,6 +515,7 @@ export const games: Game[] = prepareGameContent([
   }),
   createLocalHtml5Game({
     slug: 'panda-mart',
+    assetBasePath: '/playable-games',
     title: 'Panda Mart',
     shortDescription:
       'Run a cozy bamboo shop, stock shelves, serve guests, and upgrade your tiny forest mart.',

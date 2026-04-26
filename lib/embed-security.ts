@@ -23,6 +23,7 @@ export type GameEmbedSecurityIssue = {
 const trustedFirstPartySandbox = ['allow-scripts', 'allow-same-origin', 'allow-pointer-lock'];
 const sandboxedThirdPartySandbox = ['allow-scripts', 'allow-pointer-lock'];
 const previewSandbox = ['allow-scripts'];
+const trustedFirstPartyLocalPackageBasePaths = ['/games', '/playable-games'] as const;
 
 function isHttpsUrl(value: string | undefined) {
   if (!value) {
@@ -40,15 +41,17 @@ function isSameOriginPath(value: string | undefined) {
   return Boolean(value?.startsWith('/'));
 }
 
-function getExpectedLocalPackageUrl(game: Game) {
-  return `/games/${game.slug}/index.html`;
+function getExpectedLocalPackageUrls(game: Game) {
+  return trustedFirstPartyLocalPackageBasePaths.map(
+    (basePath) => `${basePath}/${game.slug}/index.html`
+  );
 }
 
 function isExpectedFirstPartyLocalPackage(game: Game) {
   return (
     game.sourceOrigin === 'first_party' &&
     game.embedType === 'html5-package' &&
-    game.source.url === getExpectedLocalPackageUrl(game)
+    getExpectedLocalPackageUrls(game).includes(game.source.url ?? '')
   );
 }
 

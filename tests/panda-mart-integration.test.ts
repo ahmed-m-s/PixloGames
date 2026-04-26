@@ -49,7 +49,7 @@ describe('Panda Mart catalog integration', () => {
       isEditorsPick: true,
       isTrending: true
     });
-    expect(game.embedUrl).toBe('/games/panda-mart/index.html');
+    expect(game.embedUrl).toBe('/playable-games/panda-mart/index.html');
     expect(game.source).toMatchObject({
       mode: 'embedded',
       embedType: 'html5-package',
@@ -67,9 +67,9 @@ describe('Panda Mart catalog integration', () => {
   it('keeps the Panda Mart package and artwork available at the expected public paths', () => {
     const game = getPandaMart();
     const packageFiles = [
-      '/games/panda-mart/index.html',
-      '/games/panda-mart/style.css',
-      '/games/panda-mart/game.js',
+      '/playable-games/panda-mart/index.html',
+      '/playable-games/panda-mart/style.css',
+      '/playable-games/panda-mart/game.js',
       game.thumbnail,
       game.coverImage
     ];
