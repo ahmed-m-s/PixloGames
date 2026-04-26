@@ -761,7 +761,12 @@
     }
 
     if (state.shelfStock > visibleStock) {
-      drawLabel(`+${state.shelfStock - visibleStock}`, shelf.x + shelf.width - 44, shelf.y + shelf.height - 8, '#ffd166');
+      drawLabel(
+        `+${state.shelfStock - visibleStock}`,
+        shelf.x + shelf.width - 44,
+        shelf.y + shelf.height - 8,
+        '#ffd166'
+      );
     }
   }
 
@@ -772,10 +777,40 @@
     const sourceState = state.sourceStock > 0 ? 'Ready' : 'Growing';
     const shelfState = state.shelfStock >= getShelfCapacity() ? 'Full' : 'Open space';
 
-    fillRoundRect(source.x - 12, source.y - 12, source.width + 24, source.height + 24, 18, '#67b857');
-    strokeRoundRect(source.x - 12, source.y - 12, source.width + 24, source.height + 24, 18, '#245936', 4);
-    fillRoundRect(source.x + 10, source.y + 14, source.width - 20, source.height - 28, 14, '#8b603c');
-    strokeRoundRect(source.x + 10, source.y + 14, source.width - 20, source.height - 28, 14, '#4b3322', 3);
+    fillRoundRect(
+      source.x - 12,
+      source.y - 12,
+      source.width + 24,
+      source.height + 24,
+      18,
+      '#67b857'
+    );
+    strokeRoundRect(
+      source.x - 12,
+      source.y - 12,
+      source.width + 24,
+      source.height + 24,
+      18,
+      '#245936',
+      4
+    );
+    fillRoundRect(
+      source.x + 10,
+      source.y + 14,
+      source.width - 20,
+      source.height - 28,
+      14,
+      '#8b603c'
+    );
+    strokeRoundRect(
+      source.x + 10,
+      source.y + 14,
+      source.width - 20,
+      source.height - 28,
+      14,
+      '#4b3322',
+      3
+    );
 
     for (let i = 0; i < Math.min(state.sourceStock, 12); i += 1) {
       const col = i % 4;
@@ -797,7 +832,14 @@
     fillRoundRect(shelf.x - 16, shelf.y - 18, shelf.width + 32, 38, 8, '#ffcf5a');
     strokeRoundRect(shelf.x - 16, shelf.y - 18, shelf.width + 32, 38, 8, '#714c27', 3);
     for (let i = 0; i < 4; i += 1) {
-      fillRoundRect(shelf.x - 8 + i * 48, shelf.y - 15, 24, 32, 6, i % 2 === 0 ? '#ff8e72' : '#fff1a6');
+      fillRoundRect(
+        shelf.x - 8 + i * 48,
+        shelf.y - 15,
+        24,
+        32,
+        6,
+        i % 2 === 0 ? '#ff8e72' : '#fff1a6'
+      );
     }
 
     fillRoundRect(shelf.x, shelf.y + 16, shelf.width, shelf.height, 10, '#9c6738');
@@ -1033,7 +1075,9 @@
   }
 
   function isFormControl(target) {
-    return target instanceof HTMLElement && Boolean(target.closest('button, input, select, textarea'));
+    return (
+      target instanceof HTMLElement && Boolean(target.closest('button, input, select, textarea'))
+    );
   }
 
   function handleKeyDown(event) {

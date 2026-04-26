@@ -59,7 +59,9 @@ describe('Panda Mart catalog integration', () => {
       expect.arrayContaining(['WASD', 'Arrow keys', 'E', 'Space'])
     );
     expect(game.controls.touch).toBe(true);
-    expect(game.supportedPlatforms).toEqual(expect.arrayContaining(['desktop', 'mobile', 'tablet']));
+    expect(game.supportedPlatforms).toEqual(
+      expect.arrayContaining(['desktop', 'mobile', 'tablet'])
+    );
   });
 
   it('keeps the Panda Mart package and artwork available at the expected public paths', () => {
@@ -87,19 +89,13 @@ describe('Panda Mart catalog integration', () => {
 
     expect(management?.slug).toBe('management');
     expect(collectionIds).toEqual(
-      new Set([
-        'collection-trending-now',
-        'collection-editors-picks',
-        'collection-new-releases'
-      ])
+      new Set(['collection-trending-now', 'collection-editors-picks', 'collection-new-releases'])
     );
     expect(
       browseGames(games, { ...defaultBrowseState, q: 'panda' }).map((game) => game.slug)
     ).toContain(pandaMartSlug);
     expect(
-      browseGames(games, { ...defaultBrowseState, category: 'Management' }).map(
-        (game) => game.slug
-      )
+      browseGames(games, { ...defaultBrowseState, category: 'Management' }).map((game) => game.slug)
     ).toContain(pandaMartSlug);
   });
 
