@@ -2,9 +2,9 @@ import {
   getCollectionBySlugFromRepository,
   listCollections,
   listCollectionsForGame,
-  listGames,
   resolveCollectionGames
 } from '@/lib/repositories/content-repository';
+import { listGames } from '@/lib/games';
 
 export async function getPublicGames() {
   return listGames();

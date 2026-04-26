@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import { PageContainer } from '@/components/ui/page-container';
 import { Pill } from '@/components/ui/pill';
 import { categories } from '@/data/games';
+import { listGames } from '@/lib/games';
 import { createPageMetadata } from '@/lib/metadata';
-import { listGames } from '@/lib/repositories/content-repository';
 import { cn } from '@/lib/utils';
 
 const accentStyles = {
