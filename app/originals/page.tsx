@@ -9,8 +9,8 @@ import { PageContainer } from '@/components/ui/page-container';
 import { Pill } from '@/components/ui/pill';
 import { ResponsiveGrid } from '@/components/ui/responsive-grid';
 import { SectionHeader } from '@/components/ui/section-header';
+import { listGames } from '@/lib/games';
 import { createPageMetadata } from '@/lib/metadata';
-import { listGames } from '@/lib/repositories/content-repository';
 
 export const metadata: Metadata = createPageMetadata(
   'Pixlo Originals',

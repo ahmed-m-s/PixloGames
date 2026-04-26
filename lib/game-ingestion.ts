@@ -18,6 +18,8 @@ type LocalGameCollectionId =
   | 'collection-seasonal-picks'
   | 'collection-sponsored-highlights';
 
+export type LocalHtml5GameAssetBasePath = '/games' | '/playable-games';
+
 export type LocalHtml5GameRegistration = {
   slug: string;
   title: string;
@@ -49,13 +51,17 @@ export type LocalHtml5GameRegistration = {
   seoDescription?: string;
   thumbnail?: string;
   coverImage?: string;
+  assetBasePath?: LocalHtml5GameAssetBasePath;
 };
 
-export function getLocalHtml5GamePaths(slug: string) {
+export function getLocalHtml5GamePaths(
+  slug: string,
+  assetBasePath: LocalHtml5GameAssetBasePath = '/games'
+) {
   return {
-    embedUrl: `/games/${slug}/index.html`,
-    thumbnail: `/games/${slug}/assets/thumbnail.svg`,
-    coverImage: `/games/${slug}/assets/cover.svg`
+    embedUrl: `${assetBasePath}/${slug}/index.html`,
+    thumbnail: `${assetBasePath}/${slug}/assets/thumbnail.svg`,
+    coverImage: `${assetBasePath}/${slug}/assets/cover.svg`
   };
 }
 
@@ -67,10 +73,13 @@ export function getLocalHtml5GamePaths(slug: string) {
  * public/games/[slug]/game.js
  * public/games/[slug]/style.css
  *
+ * Use public/playable-games/[slug] when a static package would otherwise shadow
+ * an app route such as /games/[slug].
+ *
  * Then add one createLocalHtml5Game({ ... }) entry to data/games.ts.
  */
 export function createLocalHtml5Game(input: LocalHtml5GameRegistration): GameContentInput {
-  const paths = getLocalHtml5GamePaths(input.slug);
+  const paths = getLocalHtml5GamePaths(input.slug, input.assetBasePath);
   const isOriginal = input.sourceOrigin !== 'developer_submission';
   const fullscreenNote =
     input.fullscreenSupported === false ? 'Fullscreen not supported.' : 'Fullscreen verified.';
