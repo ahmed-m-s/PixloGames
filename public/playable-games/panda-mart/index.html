@@ -82,6 +82,7 @@
           </span>
           <p id="statusText">Open the mart to begin.</p>
           <span class="level-pill" id="levelsValue">Lv 1 / 1 / 1</span>
+          <span class="save-pill" id="saveStatus" aria-live="polite">Saved</span>
         </section>
 
         <section class="game-body">
@@ -99,7 +100,7 @@
                 <h2>Stock shelves. Serve guests. Upgrade the mart.</h2>
                 <p>
                   Walk through the bamboo patch to gather stock, then step up to the shelf to
-                  restock it for your cozy little shop.
+                  restock it for your cozy little shop. Your coins and upgrades save locally.
                 </p>
                 <button class="game-button" id="startButton" type="button">Start Shift</button>
                 <span class="control-note">
@@ -172,12 +173,35 @@
                 </span>
                 <b id="shelfCost">35</b>
               </button>
+              <button class="upgrade-button assistant-button" id="assistantButton" type="button">
+                <span class="upgrade-icon upgrade-icon--assistant" aria-hidden="true">
+                  <svg viewBox="0 0 32 32" focusable="false">
+                    <circle cx="16" cy="9" r="4" />
+                    <path d="M10 18c1.8-3 10.2-3 12 0v7H10z" />
+                    <path d="M8 22h16M12 13l-4 4M20 13l4 4" />
+                  </svg>
+                </span>
+                <span>
+                  <strong>Helper</strong>
+                  <small id="assistantStatus">Locked</small>
+                </span>
+                <b id="assistantCost">120</b>
+              </button>
             </div>
           </section>
 
-          <section class="tips-card">
-            <p class="eyebrow">Moves</p>
-            <p>WASD / Arrows. Stand on garden or shelf for automatic bamboo transfers.</p>
+          <section class="guide-card" aria-label="Tutorial and saved progress">
+            <div class="guide-heading">
+              <p class="eyebrow">Guide</p>
+              <span class="tutorial-pill" id="tutorialStatus">Step 1</span>
+            </div>
+            <p id="tutorialText">Walk into the garden to collect bamboo.</p>
+            <div class="save-tools">
+              <span class="save-note">Local save</span>
+              <button class="reset-button" id="resetProgressButton" type="button">
+                Reset save
+              </button>
+            </div>
           </section>
         </aside>
       </section>
