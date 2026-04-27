@@ -11,6 +11,17 @@
   const AUTO_TRANSFER_SECONDS = 0.24;
   const HARVEST_AMOUNT = 1;
   const DEPOSIT_AMOUNT = 1;
+  const SAVE_KEY = 'pixlo:panda-mart:v0.4';
+  const SAVE_VERSION = 1;
+  const ASSISTANT_UNLOCK_COST = 120;
+  const ASSISTANT_CARRY_CAPACITY = 2;
+  const ASSISTANT_SPEED = 132;
+  const TUTORIAL_STEPS = [
+    'Walk into the garden to collect bamboo.',
+    'Walk to the shelf to auto stock bamboo.',
+    'Customers buy automatically when bamboo is stocked.',
+    'Use coins to buy upgrades or unlock the helper.'
+  ];
   const CUSTOMER_PROFILES = [
     {
       fur: '#f7b267',
@@ -69,7 +80,14 @@
     pauseButton: document.getElementById('pauseButton'),
     resumeButton: document.getElementById('resumeButton'),
     restartButton: document.getElementById('restartButton'),
-    touchInteractButton: document.getElementById('touchInteractButton')
+    touchInteractButton: document.getElementById('touchInteractButton'),
+    assistantButton: document.getElementById('assistantButton'),
+    assistantStatus: document.getElementById('assistantStatus'),
+    assistantCost: document.getElementById('assistantCost'),
+    tutorialText: document.getElementById('tutorialText'),
+    tutorialStatus: document.getElementById('tutorialStatus'),
+    saveStatus: document.getElementById('saveStatus'),
+    resetProgressButton: document.getElementById('resetProgressButton')
   };
 
   const zones = {
@@ -102,6 +120,9 @@
     spawnTimer: 1.6,
     customers: [],
     status: 'Open the mart to begin.',
+    saveFeedbackTimer: 0,
+    resetConfirmTimer: 0,
+    resetConfirmArmed: false,
     player: {
       x: 210,
       y: 244,
@@ -117,6 +138,23 @@
       carry: 1,
       speed: 1,
       shelf: 1
+    },
+    tutorial: {
+      step: 0,
+      completed: false
+    },
+    assistant: {
+      unlocked: false,
+      x: 344,
+      y: 500,
+      radius: 20,
+      state: 'locked',
+      carry: 0,
+      wait: 0,
+      facingX: 1,
+      facingY: 0,
+      walkTime: 0,
+      isMoving: false
     }
   };
 
@@ -143,6 +181,108 @@
     }
 
     document.documentElement.classList.toggle('is-platform-fullscreen', Boolean(data.isFullscreen));
+  }
+
+  function normalizeLevel(value) {
+    const level = Math.trunc(Number(value));
+
+    if (!Number.isFinite(level)) {
+      return 1;
+    }
+
+    return Math.max(1, Math.min(99, level));
+  }
+
+  function getTutorialLabel() {
+    if (state.tutorial.completed) {
+      return 'Done';
+    }
+
+    return `Step ${state.tutorial.step + 1}`;
+  }
+
+  function getTutorialText() {
+    if (state.tutorial.completed) {
+      return 'Guide complete. Keep stocking, upgrading, and serving guests.';
+    }
+
+    return TUTORIAL_STEPS[state.tutorial.step] ?? TUTORIAL_STEPS[0];
+  }
+
+  function showSaveFeedback(text = 'Saved') {
+    ui.saveStatus.textContent = text;
+    state.saveFeedbackTimer = 1.6;
+  }
+
+  function getProgressPayload() {
+    return {
+      version: SAVE_VERSION,
+      coins: state.coins,
+      upgrades: {
+        carry: state.upgrades.carry,
+        speed: state.upgrades.speed,
+        shelf: state.upgrades.shelf
+      },
+      tutorial: {
+        step: state.tutorial.step,
+        completed: state.tutorial.completed
+      },
+      assistantUnlocked: state.assistant.unlocked
+    };
+  }
+
+  function saveProgress({ feedback = true } = {}) {
+    try {
+      window.localStorage.setItem(SAVE_KEY, JSON.stringify(getProgressPayload()));
+
+      if (feedback) {
+        showSaveFeedback();
+      }
+    } catch {
+      ui.saveStatus.textContent = 'Save off';
+      state.saveFeedbackTimer = 2.4;
+    }
+  }
+
+  function applyDefaultProgress() {
+    state.coins = 0;
+    state.upgrades.carry = 1;
+    state.upgrades.speed = 1;
+    state.upgrades.shelf = 1;
+    state.tutorial.step = 0;
+    state.tutorial.completed = false;
+    state.assistant.unlocked = false;
+  }
+
+  function loadProgress() {
+    try {
+      const rawProgress = window.localStorage.getItem(SAVE_KEY);
+
+      if (!rawProgress) {
+        applyDefaultProgress();
+        return;
+      }
+
+      const progress = JSON.parse(rawProgress);
+
+      if (!progress || typeof progress !== 'object') {
+        applyDefaultProgress();
+        return;
+      }
+
+      state.coins = Math.max(0, Math.trunc(Number(progress.coins)) || 0);
+      state.upgrades.carry = normalizeLevel(progress.upgrades?.carry);
+      state.upgrades.speed = normalizeLevel(progress.upgrades?.speed);
+      state.upgrades.shelf = normalizeLevel(progress.upgrades?.shelf);
+      state.tutorial.completed = Boolean(progress.tutorial?.completed);
+      state.tutorial.step = Math.max(
+        0,
+        Math.min(TUTORIAL_STEPS.length - 1, Math.trunc(Number(progress.tutorial?.step)) || 0)
+      );
+      state.assistant.unlocked = Boolean(progress.assistantUnlocked);
+    } catch {
+      applyDefaultProgress();
+    }
   }
 
   function getCarryCapacity() {
@@ -225,15 +365,42 @@
     return false;
   }
 
-  function resetGame() {
-    state.coins = 0;
+  function resetAssistantShift() {
+    state.assistant.x = 344;
+    state.assistant.y = 500;
+    state.assistant.state = state.assistant.unlocked ? 'idle' : 'locked';
+    state.assistant.carry = 0;
+    state.assistant.wait = 0;
+    state.assistant.facingX = 1;
+    state.assistant.facingY = 0;
+    state.assistant.walkTime = 0;
+    state.assistant.isMoving = false;
+  }
+
+  function getAssistantSourceTarget() {
+    return {
+      x: zones.source.x + zones.source.width - 36,
+      y: zones.source.y + zones.source.height - 30
+    };
+  }
+
+  function getAssistantShelfTarget() {
+    return {
+      x: zones.shelf.x - 34,
+      y: zones.shelf.y + zones.shelf.height + 26
+    };
+  }
+
+  function resetShift() {
     state.carry = 0;
     state.sourceStock = SOURCE_CAPACITY;
     state.sourceRegenTimer = 0;
     state.shelfStock = 0;
     state.spawnTimer = 1.6;
     state.customers = [];
-    state.status = 'Step into the garden to auto harvest, then walk to the shelf to stock it.';
+    state.status = state.tutorial.completed
+      ? 'The mart is open. Stock bamboo and keep guests moving.'
+      : getTutorialText();
     state.player.x = 210;
     state.player.y = 244;
     state.player.facingX = 0;
@@ -242,9 +409,7 @@
     state.player.isMoving = false;
     state.player.harvestCooldown = 0;
     state.player.depositCooldown = 0;
-    state.upgrades.carry = 1;
-    state.upgrades.speed = 1;
-    state.upgrades.shelf = 1;
+    resetAssistantShift();
     floatingTexts.length = 0;
     customerId = 0;
   }
@@ -257,7 +422,7 @@
   }
 
   function startGame() {
-    resetGame();
+    resetShift();
     setMode('playing');
     stage.focus({ preventScroll: true });
     lastTime = performance.now();
@@ -293,6 +458,21 @@
     setStatus('Harvesting and restocking are automatic when the panda stands on the right spot.');
   }
 
+  function advanceTutorial(expectedStep) {
+    if (state.tutorial.completed || state.tutorial.step !== expectedStep) {
+      return;
+    }
+
+    state.tutorial.step += 1;
+
+    if (state.tutorial.step >= TUTORIAL_STEPS.length) {
+      state.tutorial.step = TUTORIAL_STEPS.length - 1;
+      state.tutorial.completed = true;
+    }
+
+    saveProgress();
+  }
+
   function buyUpgrade(type) {
     if (state.mode === 'start') {
       startGame();
@@ -316,6 +496,60 @@
       setStatus('Shelf capacity upgraded.');
     }
 
+    advanceTutorial(3);
+    saveProgress();
+    updateUi();
+  }
+
+  function buyAssistant() {
+    if (state.mode === 'start') {
+      startGame();
+    }
+
+    if (state.assistant.unlocked) {
+      setStatus('Helper is already on bamboo duty.');
+      return;
+    }
+
+    if (state.coins < ASSISTANT_UNLOCK_COST) {
+      setStatus(`Need ${ASSISTANT_UNLOCK_COST} coins to unlock the helper.`);
+      return;
+    }
+
+    state.coins -= ASSISTANT_UNLOCK_COST;
+    state.assistant.unlocked = true;
+    resetAssistantShift();
+    setStatus('Helper unlocked. They will carry bamboo to the shelf.');
+    advanceTutorial(3);
+    saveProgress();
+    updateUi();
+  }
+
+  function resetSavedProgress() {
+    try {
+      window.localStorage.removeItem(SAVE_KEY);
+    } catch {
+      // Local storage can be unavailable in private or restricted browser contexts.
+    }
+
+    applyDefaultProgress();
+    resetShift();
+    state.resetConfirmArmed = false;
+    state.resetConfirmTimer = 0;
+    setStatus('Saved progress reset. Start fresh when you are ready.');
+    showSaveFeedback('Reset');
+    updateUi();
+  }
+
+  function handleResetProgress() {
+    if (state.resetConfirmArmed) {
+      resetSavedProgress();
+      return;
+    }
+
+    state.resetConfirmArmed = true;
+    state.resetConfirmTimer = 4;
+    setStatus('Click Confirm reset to erase coins, upgrades, helper, and tutorial progress.');
     updateUi();
   }
 
@@ -392,6 +626,7 @@
         state.sourceStock -= collected;
         state.player.harvestCooldown = AUTO_TRANSFER_SECONDS;
         setStatus('Auto harvesting bamboo.');
+        advanceTutorial(0);
         floatingTexts.push({
           x: state.player.x,
           y: state.player.y - 48,
@@ -414,6 +649,7 @@
         state.shelfStock += deposited;
         state.player.depositCooldown = AUTO_TRANSFER_SECONDS;
         setStatus('Auto stocking the bamboo shelf.');
+        advanceTutorial(1);
         floatingTexts.push({
           x: zones.shelf.x + zones.shelf.width / 2,
           y: zones.shelf.y - 18,
@@ -421,6 +657,109 @@
           life: 0.75
         });
       }
+    }
+  }
+
+  function updateAssistant(dt) {
+    const assistant = state.assistant;
+
+    if (!assistant.unlocked) {
+      assistant.isMoving = false;
+      return;
+    }
+
+    assistant.wait = Math.max(0, assistant.wait - dt);
+
+    if (assistant.state === 'idle') {
+      assistant.isMoving = false;
+
+      if (assistant.carry > 0 && state.shelfStock < getShelfCapacity()) {
+        assistant.state = 'toShelf';
+      } else if (
+        assistant.carry < ASSISTANT_CARRY_CAPACITY &&
+        state.sourceStock > 0 &&
+        state.shelfStock < getShelfCapacity()
+      ) {
+        assistant.state = 'toSource';
+      }
+      return;
+    }
+
+    if (assistant.state === 'toSource') {
+      if (moveToward(assistant, getAssistantSourceTarget(), ASSISTANT_SPEED, dt)) {
+        assistant.state = 'harvesting';
+        assistant.wait = 0.18;
+      }
+      return;
+    }
+
+    if (assistant.state === 'harvesting') {
+      assistant.isMoving = false;
+
+      if (assistant.wait > 0) {
+        return;
+      }
+
+      const shelfSpace = getShelfCapacity() - state.shelfStock;
+      const carrySpace = ASSISTANT_CARRY_CAPACITY - assistant.carry;
+      const collected = Math.min(carrySpace, shelfSpace, state.sourceStock);
+
+      if (collected <= 0) {
+        assistant.state = 'idle';
+        return;
+      }
+
+      assistant.carry += collected;
+      state.sourceStock -= collected;
+      assistant.state = 'toShelf';
+      setStatus('Helper gathered bamboo for the shelf.');
+      floatingTexts.push({
+        x: assistant.x,
+        y: assistant.y - 44,
+        text: `Helper +${collected}`,
+        life: 0.75
+      });
+      return;
+    }
+
+    if (assistant.state === 'toShelf') {
+      if (state.shelfStock >= getShelfCapacity()) {
+        assistant.isMoving = false;
+        return;
+      }
+
+      if (moveToward(assistant, getAssistantShelfTarget(), ASSISTANT_SPEED, dt)) {
+        assistant.state = 'depositing';
+        assistant.wait = 0.18;
+      }
+      return;
+    }
+
+    if (assistant.state === 'depositing') {
+      assistant.isMoving = false;
+
+      if (assistant.wait > 0) {
+        return;
+      }
+
+      const shelfSpace = getShelfCapacity() - state.shelfStock;
+      const deposited = Math.min(assistant.carry, shelfSpace);
+
+      if (deposited <= 0) {
+        assistant.state = 'idle';
+        return;
+      }
+
+      assistant.carry -= deposited;
+      state.shelfStock += deposited;
+      assistant.state = assistant.carry > 0 ? 'toShelf' : 'toSource';
+      setStatus('Helper stocked bamboo on the shelf.');
+      floatingTexts.push({
+        x: zones.shelf.x + 8,
+        y: zones.shelf.y + zones.shelf.height + 18,
+        text: `Helper shelf +${deposited}`,
+        life: 0.75
+      });
     }
   }
 
@@ -513,6 +852,8 @@
       if (customer.wait <= 0) {
         state.coins += SALE_VALUE;
         customer.state = 'leaving';
+        advanceTutorial(2);
+        saveProgress();
         floatingTexts.push({
           x: zones.checkout.x + zones.checkout.width / 2,
           y: zones.checkout.y + 20,
@@ -555,14 +896,30 @@
     }
   }
 
+  function updateUiTimers(dt) {
+    state.saveFeedbackTimer = Math.max(0, state.saveFeedbackTimer - dt);
+
+    if (state.resetConfirmArmed) {
+      state.resetConfirmTimer = Math.max(0, state.resetConfirmTimer - dt);
+
+      if (state.resetConfirmTimer <= 0) {
+        state.resetConfirmArmed = false;
+      }
+    }
+  }
+
   function update(dt) {
+    updateUiTimers(dt);
+
     if (!isPlaying()) {
+      updateUi();
       return;
     }
 
     updatePlayer(dt);
     updateSource(dt);
     updateAutoInteractions(dt);
+    updateAssistant(dt);
     updateCustomers(dt);
     updateFloatingTexts(dt);
     updateUi();
@@ -928,6 +1285,71 @@
     ctx.restore();
   }
 
+  function drawAssistant() {
+    const assistant = state.assistant;
+
+    if (!assistant.unlocked) {
+      return;
+    }
+
+    const step = assistant.isMoving ? Math.sin(assistant.walkTime * 2.2) : 0;
+    const bob = assistant.isMoving ? Math.abs(step) * 1.4 : 0;
+    const lookX = Math.max(-2, Math.min(2, assistant.facingX * 2));
+    const lookY = Math.max(-1.5, Math.min(1.5, assistant.facingY * 1.5));
+
+    ctx.save();
+    ctx.translate(assistant.x, assistant.y - bob);
+    ctx.fillStyle = 'rgba(38, 49, 38, 0.2)';
+    ctx.beginPath();
+    ctx.ellipse(1, 28 + bob, 22, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawLimb(-7, 10 + step * 2, -10, 28 + step * 4, 8, '#3d6a63');
+    drawLimb(8, 10 - step * 2, 11, 28 - step * 4, 8, '#3d6a63');
+    fillStrokeEllipse(0, 0, 16, 21, 0, '#f6b26b');
+    fillRoundRect(-11, -9, 22, 22, 7, '#5ac6d8');
+    strokeRoundRect(-11, -9, 22, 22, 7, '#253027', 2.5);
+    drawLimb(-13, -5, -21, 9 - step * 3, 7, '#f2c48d');
+    drawLimb(13, -5, 21, 9 + step * 3, 7, '#f2c48d');
+
+    ctx.fillStyle = '#f2c48d';
+    ctx.strokeStyle = '#263126';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-16, -24);
+    ctx.lineTo(-8, -39);
+    ctx.lineTo(-2, -24);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(16, -24);
+    ctx.lineTo(8, -39);
+    ctx.lineTo(2, -24);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    fillStrokeCircle(0, -20, 18, '#f2c48d');
+    fillStrokeEllipse(0, -14, 9, 6, 0, 'rgba(255,255,255,.68)', 'rgba(255,255,255,.68)', 1);
+    fillStrokeCircle(-6 + lookX, -22 + lookY, 2.6, '#253027', '#253027', 1);
+    fillStrokeCircle(6 + lookX, -22 + lookY, 2.6, '#253027', '#253027', 1);
+    ctx.strokeStyle = '#253027';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0 + lookX * 0.2, -14 + lookY * 0.3, 5, 0.15, Math.PI - 0.15);
+    ctx.stroke();
+
+    if (assistant.carry > 0) {
+      fillRoundRect(-19, 6, 38, 19, 7, '#9c6738');
+      strokeRoundRect(-19, 6, 38, 19, 7, '#5d351d', 3);
+      for (let i = 0; i < assistant.carry; i += 1) {
+        drawBamboo(-13 + i * 11, 14 - (i % 2) * 3, 20, -0.18);
+      }
+    }
+
+    ctx.restore();
+  }
+
   function drawCustomerEars(profile) {
     if (profile.ears === 'long') {
       fillStrokeEllipse(-10, -34, 5, 15, -0.22, profile.ear);
@@ -1141,6 +1563,7 @@
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     drawFloor();
     drawShop();
+    drawAssistant();
 
     for (const customer of state.customers) {
       drawCustomer(customer);
@@ -1167,6 +1590,16 @@
     ui.carryCost.textContent = String(getUpgradeCost('carry'));
     ui.speedCost.textContent = String(getUpgradeCost('speed'));
     ui.shelfCost.textContent = String(getUpgradeCost('shelf'));
+    ui.assistantStatus.textContent = state.assistant.unlocked ? 'On duty' : 'Locked';
+    ui.assistantCost.textContent = state.assistant.unlocked ? 'On' : String(ASSISTANT_UNLOCK_COST);
+    ui.assistantButton.disabled = state.assistant.unlocked || state.coins < ASSISTANT_UNLOCK_COST;
+    ui.assistantButton.classList.toggle('is-unlocked', state.assistant.unlocked);
+    ui.tutorialText.textContent = getTutorialText();
+    ui.tutorialStatus.textContent = getTutorialLabel();
+    ui.tutorialStatus.classList.toggle('is-complete', state.tutorial.completed);
+    ui.saveStatus.classList.toggle('is-visible', state.saveFeedbackTimer > 0);
+    ui.resetProgressButton.textContent = state.resetConfirmArmed ? 'Confirm reset' : 'Reset save';
+    ui.resetProgressButton.classList.toggle('is-confirming', state.resetConfirmArmed);
 
     for (const button of document.querySelectorAll('[data-upgrade]')) {
       const type = button.dataset.upgrade;
@@ -1252,6 +1685,8 @@
     ui.pauseButton.addEventListener('click', togglePause);
     ui.resumeButton.addEventListener('click', togglePause);
     ui.restartButton.addEventListener('click', startGame);
+    ui.assistantButton.addEventListener('click', buyAssistant);
+    ui.resetProgressButton.addEventListener('click', handleResetProgress);
     ui.touchInteractButton.addEventListener('pointerdown', (event) => {
       event.preventDefault();
       stage.focus({ preventScroll: true });
@@ -1266,6 +1701,8 @@
   }
 
   applyEmbedMode();
+  loadProgress();
+  resetAssistantShift();
   bindEvents();
   updateUi();
   render();
