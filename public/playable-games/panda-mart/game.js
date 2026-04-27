@@ -196,6 +196,10 @@
     return Math.hypot(a.x - b.x, a.y - b.y);
   }
 
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
   function moveToward(entity, target, speed, dt) {
     const dx = target.x - entity.x;
     const dy = target.y - entity.y;
@@ -441,6 +445,8 @@
       x: zones.entrance.x,
       y: zones.entrance.y + (customerId % 3) * 36,
       state: 'toShelf',
+      requestItem: 'bamboo',
+      requestQuantity: 1,
       wait: 0,
       hasBamboo: false,
       profile,
@@ -960,6 +966,111 @@
     fillStrokeCircle(14, -29, 7, profile.ear);
   }
 
+  function drawRequestBambooIcon(x, y, scale = 1) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(scale, scale);
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#31572c';
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.moveTo(-12, 4);
+    ctx.lineTo(7, -8);
+    ctx.stroke();
+    ctx.strokeStyle = '#bfe85d';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(-12, 4);
+    ctx.lineTo(7, -8);
+    ctx.stroke();
+    ctx.strokeStyle = '#5d9f45';
+    ctx.lineWidth = 1.6;
+    for (let i = -7; i <= 3; i += 5) {
+      ctx.beginPath();
+      ctx.moveTo(i, 1 - i * 0.62);
+      ctx.lineTo(i + 2, 5 - i * 0.62);
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#67c95f';
+    ctx.beginPath();
+    ctx.ellipse(8, -11, 7, 3, -0.35, 0, Math.PI * 2);
+    ctx.ellipse(-4, 5, 6, 2.8, 0.45, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawBubbleCheck(x, y) {
+    ctx.save();
+    ctx.strokeStyle = '#2f8f62';
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(x - 6, y);
+    ctx.lineTo(x - 1, y + 5);
+    ctx.lineTo(x + 8, y - 6);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawCustomerRequestBubble(customer, bob) {
+    const isFulfilled = customer.hasBamboo;
+    const bubbleWidth = isFulfilled ? 58 : 68;
+    const bubbleHeight = 36;
+    const bubbleX = clamp(customer.x, bubbleWidth / 2 + 10, WIDTH - bubbleWidth / 2 - 10);
+    const bubbleTop = clamp(customer.y - 84 - bob, 18, HEIGHT - bubbleHeight - 16);
+    const pointerX = clamp(
+      customer.x,
+      bubbleX - bubbleWidth / 2 + 14,
+      bubbleX + bubbleWidth / 2 - 14
+    );
+    const pointerY = bubbleTop + bubbleHeight + 9;
+
+    ctx.save();
+    ctx.globalAlpha = customer.state === 'leaving' && !customer.hasBamboo ? 0.82 : 1;
+    fillRoundRect(
+      bubbleX - bubbleWidth / 2,
+      bubbleTop,
+      bubbleWidth,
+      bubbleHeight,
+      10,
+      'rgba(255, 253, 232, 0.96)'
+    );
+    strokeRoundRect(
+      bubbleX - bubbleWidth / 2,
+      bubbleTop,
+      bubbleWidth,
+      bubbleHeight,
+      10,
+      isFulfilled ? '#2f8f62' : '#243527',
+      2.5
+    );
+    ctx.fillStyle = 'rgba(255, 253, 232, 0.96)';
+    ctx.strokeStyle = isFulfilled ? '#2f8f62' : '#243527';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(pointerX - 7, bubbleTop + bubbleHeight - 1);
+    ctx.lineTo(pointerX, pointerY);
+    ctx.lineTo(pointerX + 7, bubbleTop + bubbleHeight - 1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    drawRequestBambooIcon(bubbleX - (isFulfilled ? 10 : 15), bubbleTop + 21, 0.82);
+
+    if (isFulfilled) {
+      drawBubbleCheck(bubbleX + 15, bubbleTop + 19);
+    } else {
+      ctx.fillStyle = '#243527';
+      ctx.font = '900 15px system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`x${customer.requestQuantity ?? 1}`, bubbleX + 9, bubbleTop + 20);
+    }
+
+    ctx.restore();
+  }
+
   function drawCustomer(customer) {
     const profile = customer.profile;
     const step = customer.isMoving ? Math.sin(customer.walkTime * 2.2) : 0;
@@ -993,11 +1104,8 @@
       drawBamboo(-18, 10, 28, -0.18);
     }
 
-    if (customer.state === 'waiting') {
-      drawLabel('Need stock', -35, -46, '#ffd166');
-    }
-
     ctx.restore();
+    drawCustomerRequestBubble(customer, bob);
   }
 
   function drawHudHints() {
@@ -1055,7 +1163,7 @@
     ui.shelf.textContent = `${state.shelfStock} / ${getShelfCapacity()}`;
     ui.customers.textContent = String(state.customers.length);
     ui.status.textContent = state.status;
-    ui.levels.textContent = `Carry ${state.upgrades.carry} | Speed ${state.upgrades.speed} | Shelf ${state.upgrades.shelf}`;
+    ui.levels.textContent = `Lv ${state.upgrades.carry} / ${state.upgrades.speed} / ${state.upgrades.shelf}`;
     ui.carryCost.textContent = String(getUpgradeCost('carry'));
     ui.speedCost.textContent = String(getUpgradeCost('speed'));
     ui.shelfCost.textContent = String(getUpgradeCost('shelf'));
