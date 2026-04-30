@@ -29,6 +29,7 @@
     "ops:backup": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/backup-postgres.ps1",
     "ops:backup:dry-run": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/backup-postgres.ps1 -DryRun",
     "ops:restore:dry-run": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/restore-postgres.ps1 -DryRun",
+    "ops:observability:verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-observability.ps1",
     "ops:release:verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deployment-smoke.ps1 -ReleaseVerify",
     "ops:smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deployment-smoke.ps1"
   },
