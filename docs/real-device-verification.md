@@ -8,11 +8,11 @@ staging URL and the evidence has been captured.
 
 ## Required Device Matrix
 
-| Priority | Device/browser | Why it matters |
-| --- | --- | --- |
-| Required | Physical iPhone on Safari | Proves iOS touch, viewport, iframe, and fullscreen fallback behavior. |
-| Required | Physical Android phone on Chrome | Proves Android touch, iframe, and element fullscreen behavior. |
-| Conditional | Tablet Safari or Chrome | Run when player sizing, orientation, or responsive game layout changed. |
+| Priority    | Device/browser                   | Why it matters                                                          |
+| ----------- | -------------------------------- | ----------------------------------------------------------------------- |
+| Required    | Physical iPhone on Safari        | Proves iOS touch, viewport, iframe, and fullscreen fallback behavior.   |
+| Required    | Physical Android phone on Chrome | Proves Android touch, iframe, and element fullscreen behavior.          |
+| Conditional | Tablet Safari or Chrome          | Run when player sizing, orientation, or responsive game layout changed. |
 
 Use current stable OS/browser versions when possible. Record the exact device model, OS version,
 browser version, staging URL, commit SHA, operator, and date.
