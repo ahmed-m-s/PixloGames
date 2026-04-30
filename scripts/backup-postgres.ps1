@@ -56,6 +56,27 @@ function Resolve-CommandPath([string]$configured, [string]$fallbackName) {
   throw "Required command '$configured' was not found. Set PIXLO_PG_DUMP_PATH or add PostgreSQL bin tools to PATH."
 }
 
+function Resolve-PostgresToolDatabaseUrl([string]$databaseUrl) {
+  try {
+    $builder = [System.UriBuilder]::new($databaseUrl)
+    $query = $builder.Query.TrimStart("?")
+
+    if ($query) {
+      $keptQueryParts = $query.Split("&") | Where-Object {
+        $name = $_.Split("=", 2)[0]
+
+        $name -ine "schema"
+      }
+
+      $builder.Query = ($keptQueryParts -join "&")
+    }
+
+    return $builder.Uri.AbsoluteUri
+  } catch {
+    return ($databaseUrl -replace "([?&])schema=[^&]*&?", '$1').TrimEnd("?", "&")
+  }
+}
+
 Import-LocalDotEnv
 
 if ([string]::IsNullOrWhiteSpace($env:DATABASE_URL)) {
@@ -77,6 +98,7 @@ $manifestPath = Join-Path $targetDir "manifest.txt"
 $localMediaRoot = Join-Path (Get-Location) "storage\media"
 $mediaArchive = Join-Path $targetDir "local-media.zip"
 $pgDump = Resolve-CommandPath $env:PIXLO_PG_DUMP_PATH "pg_dump"
+$postgresToolDatabaseUrl = Resolve-PostgresToolDatabaseUrl $env:DATABASE_URL
 
 Write-Host "PixloGames backup target: $targetDir"
 Write-Host "Database dump command: $pgDump"
@@ -88,7 +110,7 @@ if ($DryRun) {
 
 New-Item -ItemType Directory -Force -Path $targetDir | Out-Null
 
-& $pgDump --format=custom --no-owner --no-privileges --file $databaseDump $env:DATABASE_URL
+& $pgDump --format=custom --no-owner --no-privileges --file $databaseDump $postgresToolDatabaseUrl
 
 if ($LASTEXITCODE -ne 0) {
   throw "pg_dump failed with exit code $LASTEXITCODE."
