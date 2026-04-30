@@ -8,14 +8,14 @@ submission before promoting it publicly.
 
 ## Existing Surfaces
 
-| Stage | Current surface |
-| --- | --- |
-| Public intake | `/developers/submit-game` and `POST /api/submissions` |
-| Review queue | `/internal/submissions` |
-| Submission detail and moderation | `/internal/submissions/[id]` |
-| Draft creation | `Create game draft` on the submission detail publishing bridge |
-| Game operations and publishing | `/internal/games` |
-| Post-publish public proof | `/games`, `/search`, `/games/[slug]`, `/api/games`, `/api/health` |
+| Stage                            | Current surface                                                   |
+| -------------------------------- | ----------------------------------------------------------------- |
+| Public intake                    | `/developers/submit-game` and `POST /api/submissions`             |
+| Review queue                     | `/internal/submissions`                                           |
+| Submission detail and moderation | `/internal/submissions/[id]`                                      |
+| Draft creation                   | `Create game draft` on the submission detail publishing bridge    |
+| Game operations and publishing   | `/internal/games`                                                 |
+| Post-publish public proof        | `/games`, `/search`, `/games/[slug]`, `/api/games`, `/api/health` |
 
 Internal review and publishing actions are protected by internal auth and CSRF. Do not bypass the
 internal UI/API protections for a rehearsal.

@@ -25,13 +25,13 @@ automation misses, not a substitute for failed checks.
 
 Review these routes on the staging deployment:
 
-| Route/flow | What to cover |
-| --- | --- |
-| `/` | Header, primary navigation, search, homepage discovery sections. |
-| `/games` | Browse heading, filters/links if present, game-card navigation, scroll behavior. |
-| `/search?q=memory` | Search results heading, result cards, empty/new search behavior. |
-| `/games/endless-runner` | Game detail content, Play, Fullscreen, iframe focus, player recovery. |
-| `/internal/sign-in` | Email/password labels, error message, sign-in button, signed-out message if reachable. |
+| Route/flow              | What to cover                                                                          |
+| ----------------------- | -------------------------------------------------------------------------------------- |
+| `/`                     | Header, primary navigation, search, homepage discovery sections.                       |
+| `/games`                | Browse heading, filters/links if present, game-card navigation, scroll behavior.       |
+| `/search?q=memory`      | Search results heading, result cards, empty/new search behavior.                       |
+| `/games/endless-runner` | Game detail content, Play, Fullscreen, iframe focus, player recovery.                  |
+| `/internal/sign-in`     | Email/password labels, error message, sign-in button, signed-out message if reachable. |
 
 If a release changes a specific game package, also review that game detail page and one game input
 path after launch.
