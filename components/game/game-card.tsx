@@ -7,6 +7,7 @@ import { FavoriteButton } from '@/components/game/favorite-button';
 import { GameMetaRow } from '@/components/game/game-meta-row';
 import { Pill } from '@/components/ui/pill';
 import { trackEvent } from '@/lib/analytics';
+import { getCatalogEntryKind, isPlayableLocalGame } from '@/lib/catalog-semantics';
 import { cn } from '@/lib/utils';
 import type { Game, GameBadge, GameCardVariant } from '@/types/game';
 
@@ -50,6 +51,14 @@ export function GameCard({
   const badges = getBadges(game);
   const isCompact = variant === 'compact';
   const isFeatured = variant === 'featured';
+  const entryKind = getCatalogEntryKind(game);
+  const entryLabel =
+    entryKind === 'playable_local'
+      ? 'Pixlo Original'
+      : entryKind === 'preview'
+        ? 'Preview entry'
+        : 'Remote playable';
+  const actionLabel = entryKind === 'preview' ? 'View preview' : 'Play now';
 
   return (
     <motion.article
@@ -138,10 +147,10 @@ export function GameCard({
             <GameMetaRow compact={isCompact} game={game} />
             <div className="mt-3 flex items-center justify-between gap-3 border-t border-white/10 pt-3">
               <span className="text-xs font-bold uppercase tracking-[0.12em] text-muted">
-                {game.sourceOrigin === 'first_party' ? 'Pixlo Original' : game.category}
+                {isPlayableLocalGame(game) ? 'Pixlo Original' : entryLabel}
               </span>
               <span className="text-sm font-black text-foreground transition group-hover:text-brand">
-                Play now
+                {actionLabel}
               </span>
             </div>
           </div>

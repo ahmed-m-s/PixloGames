@@ -4,7 +4,9 @@ import {
   listCollectionsForGame,
   resolveCollectionGames
 } from '@/lib/repositories/content-repository';
+import { isPlayableCatalogGame } from '@/lib/catalog-semantics';
 import { listGames } from '@/lib/games';
+import { getPlayableHomepageGames, resolveHomepageCollectionGames } from '@/lib/homepage-surfacing';
 
 export async function getPublicGames() {
   return listGames();
@@ -22,18 +24,16 @@ export async function getCollectionGamesBySlug(slug: string) {
 
 export async function getHomepageData() {
   const [games, collections] = await Promise.all([listGames(), listCollections()]);
-  const gameById = new Map(games.map((game) => [game.id, game]));
+  const playableGames = getPlayableHomepageGames(games);
   const collectionGames = new Map(
     collections.map((collection) => [
       collection.slug,
-      collection.gameIds
-        .map((gameId) => gameById.get(gameId))
-        .filter((game): game is NonNullable<typeof game> => Boolean(game))
+      resolveHomepageCollectionGames(collection.gameIds, playableGames)
     ])
   );
-  const homepageEligibleGames = games
-    .filter((game) => game.visibility === 'public' && game.qaStatus === 'passed')
-    .sort((a, b) => b.featuredPriority - a.featuredPriority || b.plays - a.plays);
+  const homepageEligibleGames = playableGames.sort(
+    (a, b) => b.featuredPriority - a.featuredPriority || b.plays - a.plays
+  );
 
   return {
     allGames: games,
@@ -52,12 +52,15 @@ export async function getGameCollections(gameId: string) {
 }
 
 export async function getHomepageCollections() {
-  const collections = await listCollections();
+  const [collections, games] = await Promise.all([listCollections(), listGames()]);
+  const playableGames = getPlayableHomepageGames(games);
 
   return collections
     .filter(
       (collection) =>
-        collection.visibility === 'public' && collection.placement.includes('homepage')
+        collection.visibility === 'public' &&
+        collection.placement.includes('homepage') &&
+        resolveHomepageCollectionGames(collection.gameIds, playableGames).length > 0
     )
     .sort((a, b) => b.priority - a.priority);
 }
@@ -65,16 +68,18 @@ export async function getHomepageCollections() {
 export async function getHomepageEligibleGames() {
   const games = await getPublicGames();
 
-  return games
-    .filter((game) => game.visibility === 'public' && game.qaStatus === 'passed')
-    .sort((a, b) => b.featuredPriority - a.featuredPriority || b.plays - a.plays);
+  return getPlayableHomepageGames(games).sort(
+    (a, b) => b.featuredPriority - a.featuredPriority || b.plays - a.plays
+  );
 }
 
 export async function getSponsoredEligibleGames() {
   const games = await getPublicGames();
 
   return games
-    .filter((game) => game.adSafe && game.moderationStatus === 'approved')
+    .filter(
+      (game) => isPlayableCatalogGame(game) && game.adSafe && game.moderationStatus === 'approved'
+    )
     .sort(
       (a, b) => b.sponsoredPriority - a.sponsoredPriority || b.featuredWeight - a.featuredWeight
     );

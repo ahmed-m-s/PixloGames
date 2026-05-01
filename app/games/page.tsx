@@ -6,6 +6,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { PageContainer } from '@/components/ui/page-container';
 import { Pill } from '@/components/ui/pill';
 import { ResponsiveGrid } from '@/components/ui/responsive-grid';
+import { summarizeCatalogEntries } from '@/lib/catalog-semantics';
 import { categories } from '@/data/games';
 import { browseGames, getTagsFromGames, parseBrowseState } from '@/lib/browse';
 import { listGames } from '@/lib/games';
@@ -27,10 +28,12 @@ type GamesPageProps = {
 export default async function GamesPage({ searchParams }: GamesPageProps) {
   const params = await searchParams;
   const games = await listGames();
+  const catalogSummary = summarizeCatalogEntries(games);
   const browseState = parseBrowseState(params);
   const results = browseGames(games, browseState);
-  const firstPartyCount = games.filter((game) => game.sourceOrigin === 'first_party').length;
-  const mobileReadyCount = games.filter((game) => game.mobileSupported).length;
+  const mobileReadyCount = games.filter(
+    (game) => game.mobileSupported && game.source.mode === 'embedded'
+  ).length;
   const quickLinks = [
     { label: 'Pixlo Originals', href: '/originals' },
     { label: 'Quick Plays', href: '/games?tag=casual' },
@@ -50,9 +53,9 @@ export default async function GamesPage({ searchParams }: GamesPageProps) {
                 Browse games built for instant play
               </h1>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-muted sm:text-base">
-                Start with Pixlo Originals, quick-play loops, and mobile-ready picks, then narrow
-                the catalog by category, device, tags, and editorial signals. Every public title
-                opens in the browser with no download step.
+                Browse playable local titles, remote-ready embeds, and preview entries from one
+                catalog. Start with Pixlo Originals and mobile-ready picks, then narrow the library
+                by category, device, tags, and editorial signals.
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
                 {quickLinks.map((link) => (
@@ -68,9 +71,10 @@ export default async function GamesPage({ searchParams }: GamesPageProps) {
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:min-w-[430px] lg:grid-cols-2">
               {[
-                [games.length, 'Playable titles'],
-                [firstPartyCount, 'Pixlo originals'],
-                [mobileReadyCount, 'Mobile ready'],
+                [catalogSummary.totalEntries, 'Catalog entries'],
+                [catalogSummary.playableLocalEntries, 'Playable local'],
+                [catalogSummary.previewEntries, 'Preview entries'],
+                [mobileReadyCount, 'Playable on mobile'],
                 [categories.length, 'Categories']
               ].map(([value, label]) => (
                 <div
@@ -97,8 +101,8 @@ export default async function GamesPage({ searchParams }: GamesPageProps) {
             </h2>
           </div>
           <p className="max-w-xl text-sm leading-6 text-muted">
-            Open any card to review controls and tags, then press Play now to launch the embedded
-            HTML5 game.
+            Open any card to review controls, source status, and tags. Play-ready entries launch in
+            the browser, while preview entries stay visible until a verified embed is connected.
           </p>
         </div>
 
