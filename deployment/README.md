@@ -18,6 +18,48 @@ These notes prepare PixloGames for a real host without pretending any host is al
 - Containerized deployment: use the root `Dockerfile` as a starting point and inject secrets at runtime.
 - Platform deployment: use provider-managed build, runtime env vars, managed PostgreSQL, and object storage for media.
 
+## Docker Proof Path
+
+The Docker path proves that PixloGames can build into an image, start as a non-root container,
+answer health checks, and pass the same public smoke contract used by hosted deployments. It is not
+a replacement for a real staging host.
+
+Use a PostgreSQL URL that is reachable from inside the container. On Docker Desktop, a local
+PostgreSQL service usually needs `host.docker.internal` instead of `localhost`:
+
+```powershell
+$env:PIXLO_DOCKER_DATABASE_URL='<DATABASE_URL>'
+npm run ops:docker:proof
+```
+
+To inspect the planned image, container name, local URL, and required secret wiring without running
+Docker, use:
+
+```powershell
+npm run ops:docker:proof -- -DryRun
+```
+
+The proof command builds `pixlo-games:local-proof`, starts it on `http://127.0.0.1:3100`, waits for
+`/api/health`, asserts the database is reachable and the public playable game count meets
+`PIXLO_DOCKER_EXPECTED_PUBLIC_GAME_COUNT`, then runs `scripts/deployment-smoke.ps1` against the
+container. The build receives `PIXLO_DOCKER_DATABASE_URL` through a Docker BuildKit secret because
+`next build` collects DB-backed routes.
+
+Override defaults with:
+
+```powershell
+$env:PIXLO_DOCKER_IMAGE='<image-name>'
+$env:PIXLO_DOCKER_CONTAINER='<container-name>'
+$env:PIXLO_DOCKER_HOST_PORT='3100'
+$env:PIXLO_DOCKER_EXPECTED_PUBLIC_GAME_COUNT='3'
+```
+
+For a real hosted container, inject staging/production secrets through the platform secret manager
+and keep `DATABASE_URL`, `NEXT_PUBLIC_SITE_URL`, `PIXLO_CSRF_SECRET`, internal admin credentials,
+and provider env vars environment-specific. The local proof uses staging-like container metadata:
+`PIXLO_ENVIRONMENT_MODE=staging`, `PIXLO_DEPLOYMENT_TARGET=self-hosted`,
+`PIXLO_HOSTING_TARGET=container`, and `PIXLO_ROLLOUT_STAGE=private_beta`.
+
 ## Reverse Proxy, Domain, and TLS
 
 - Terminate TLS before traffic reaches Next.js.
