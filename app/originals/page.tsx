@@ -9,6 +9,7 @@ import { PageContainer } from '@/components/ui/page-container';
 import { Pill } from '@/components/ui/pill';
 import { ResponsiveGrid } from '@/components/ui/responsive-grid';
 import { SectionHeader } from '@/components/ui/section-header';
+import { isPlayableLocalGame } from '@/lib/catalog-semantics';
 import { listGames } from '@/lib/games';
 import { createPageMetadata } from '@/lib/metadata';
 
@@ -39,9 +40,9 @@ const principles = [
 
 export default async function OriginalsPage() {
   const games = await listGames();
-  const originals = games
-    .filter((game) => game.sourceOrigin === 'first_party' && game.hasRealEmbed)
-    .sort((a, b) => b.featuredPriority - a.featuredPriority || a.title.localeCompare(b.title));
+  const originals = games.filter(isPlayableLocalGame).sort((a, b) => {
+    return b.featuredPriority - a.featuredPriority || a.title.localeCompare(b.title);
+  });
   const leadGame = originals[0];
   const mobileReadyCount = originals.filter((game) => game.mobileSupported).length;
   const categories = Array.from(new Set(originals.map((game) => game.category)));
