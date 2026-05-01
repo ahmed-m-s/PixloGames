@@ -3,6 +3,7 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { gameCollections } from '@/data/collections';
 import { categories, games } from '@/data/games';
+import { isPlayableLocalGame } from '@/lib/catalog-semantics';
 import { mapCollectionToDbData, mapGameToDbData } from '@/lib/repositories/prisma-mappers';
 import type { Game } from '@/types/game';
 
@@ -115,6 +116,10 @@ describe('catalog integrity', () => {
         getExpectedLocalPackageUrls(game),
         `${game.title} should use an approved local package URL`
       ).toContain(game.embedUrl);
+      expect(
+        isPlayableLocalGame(game),
+        `${game.title} should remain classified as a playable local package`
+      ).toBe(true);
       expect(game.hasRealEmbed, `${game.title} should be marked playable`).toBe(true);
       expect(game.source.mode, `${game.title} source mode should match playable package`).toBe(
         'embedded'

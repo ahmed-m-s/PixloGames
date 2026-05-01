@@ -7,6 +7,6 @@ export async function GET() {
   return apiOk(health, {
     source: 'postgresql',
     durable: true,
-    count: health.checks.publicGames
+    count: health.checks.publicPlayableGames ?? health.checks.publicGames
   });
 }

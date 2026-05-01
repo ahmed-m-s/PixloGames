@@ -12,6 +12,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:catalog:runtime": "vitest run tests/runtime-catalog-drift.test.ts",
     "test:smoke": "playwright test --config=playwright.config.ts tests/e2e/public-game-journey.spec.ts",
     "test:a11y": "playwright test --config=playwright.config.ts tests/e2e/public-a11y.spec.ts",
     "test:smoke:install": "playwright install chromium",
