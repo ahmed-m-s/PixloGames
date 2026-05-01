@@ -7,7 +7,7 @@ import type {
 } from '@/types/operations';
 
 type RolloutGateInput = {
-  publicGames: number;
+  publicPlayableGames: number;
   failedQaGames: number;
   activeInternalUsers: number;
   mediaStatus: string;
@@ -220,14 +220,14 @@ export function getRolloutGate(input: RolloutGateInput): RolloutGate {
     );
   }
 
-  if (input.publicGames < appConfig.rollout.minBetaPublicGames) {
+  if (input.publicPlayableGames < appConfig.rollout.minBetaPublicGames) {
     betaIssues.push(
       issue(
         'rollout-beta-content-threshold',
         'deployment',
         'warning',
-        `Only ${input.publicGames} public games are available for beta.`,
-        `Publish at least ${appConfig.rollout.minBetaPublicGames} QA-passed games for a useful beta.`
+        `Only ${input.publicPlayableGames} public playable games are available for beta.`,
+        `Publish at least ${appConfig.rollout.minBetaPublicGames} playable QA-passed games for a useful beta.`
       )
     );
   }
@@ -268,14 +268,14 @@ export function getRolloutGate(input: RolloutGateInput): RolloutGate {
     );
   }
 
-  if (input.publicGames < appConfig.rollout.minProductionPublicGames) {
+  if (input.publicPlayableGames < appConfig.rollout.minProductionPublicGames) {
     productionBlockers.push(
       issue(
         'rollout-production-content-threshold',
         'deployment',
         'critical',
-        `Only ${input.publicGames} public games are available for production launch.`,
-        `Publish at least ${appConfig.rollout.minProductionPublicGames} QA-passed public games, or adjust PIXLO_MIN_PRODUCTION_PUBLIC_GAMES deliberately.`
+        `Only ${input.publicPlayableGames} public playable games are available for production launch.`,
+        `Publish at least ${appConfig.rollout.minProductionPublicGames} playable QA-passed public games, or adjust PIXLO_MIN_PRODUCTION_PUBLIC_GAMES deliberately.`
       )
     );
   }

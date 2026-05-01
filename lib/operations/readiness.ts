@@ -1,5 +1,6 @@
 import { getAdProviderDiagnostics } from '@/lib/ads/provider';
 import { getAnalyticsProviderDiagnostics } from '@/lib/analytics-provider';
+import { summarizeCatalogEntries } from '@/lib/catalog-semantics';
 import { appConfig, getConfigWarnings } from '@/lib/config';
 import { prisma } from '@/lib/db/prisma';
 import { getMediaProviderDiagnostics } from '@/lib/media/storage-provider';
@@ -13,6 +14,7 @@ import {
 import { getDeploymentExecutionPlan } from '@/lib/operations/deployment-artifacts';
 import { getHostingTargetReadiness } from '@/lib/operations/hosting';
 import { getBetaReleaseChecklist, getSecurityReadiness } from '@/lib/operations/security';
+import { listGames } from '@/lib/repositories/content-repository';
 import type {
   LaunchReadinessArea,
   LaunchReadinessItem,
@@ -57,20 +59,16 @@ function readinessItem(input: Omit<LaunchReadinessItem, 'status'>): LaunchReadin
 
 export async function getLaunchReadiness() {
   const [
+    publicCatalog,
     totalGames,
-    publicGames,
     failedQaGames,
     approvedUnpublished,
     activeInternalUsers,
     adPlacements,
     recentAnalyticsEvents
   ] = await Promise.all([
+    listGames(),
     prisma.game.count(),
-    prisma.game.count({
-      where: {
-        visibility: 'public'
-      }
-    }),
     prisma.game.count({
       where: {
         qaStatus: 'failed'
@@ -98,6 +96,12 @@ export async function getLaunchReadiness() {
       }
     })
   ]);
+  const catalogSummary = summarizeCatalogEntries(publicCatalog);
+  const publicCatalogGames = catalogSummary.totalEntries;
+  const publicPlayableGames = catalogSummary.playableEntries;
+  const publicPlayableLocalGames = catalogSummary.playableLocalEntries;
+  const publicPlayableRemoteGames = catalogSummary.playableRemoteEntries;
+  const publicPreviewGames = catalogSummary.previewEntries;
 
   const media = getMediaProviderDiagnostics();
   const analytics = getAnalyticsProviderDiagnostics();
@@ -106,7 +110,7 @@ export async function getLaunchReadiness() {
   const backup = getBackupReadiness();
   const deployment = getDeploymentProfile();
   const rolloutGate = getRolloutGate({
-    publicGames,
+    publicPlayableGames,
     failedQaGames,
     activeInternalUsers,
     mediaStatus: media.status,
@@ -127,7 +131,7 @@ export async function getLaunchReadiness() {
     adActivationState: ads.activationState
   });
   const hostingTargetReadiness = getHostingTargetReadiness({
-    publicGames,
+    publicPlayableGames,
     failedQaGames,
     approvedUnpublished,
     activeInternalUsers,
@@ -228,24 +232,35 @@ export async function getLaunchReadiness() {
     readinessItem({
       area: 'publishing',
       label: 'Publishing Workflow',
-      summary: `${publicGames} public games, ${approvedUnpublished} approved submissions awaiting publication.`,
+      summary: `${publicPlayableGames} public playable games, ${publicPreviewGames} preview entries, ${approvedUnpublished} approved submissions awaiting publication.`,
       checks: [
         'Approved submissions can become game drafts',
         'Publishing validation blocks incomplete records',
         'Operators can see approved-but-unpublished queue'
       ],
       issues: [
-        ...(publicGames >= expectedPublicGames
+        ...(publicPlayableGames >= expectedPublicGames
           ? []
           : [
               issue(
                 'publishing-low-public-count',
                 'publishing',
                 appConfig.productionLike ? 'critical' : 'warning',
-                `Only ${publicGames} public games are available.`,
-                'Publish enough QA-passed games before launch or lower PIXLO_EXPECTED_PUBLIC_GAME_COUNT for this environment.'
+                `Only ${publicPlayableGames} public playable games are available.`,
+                'Publish enough playable QA-passed games before launch or lower PIXLO_EXPECTED_PUBLIC_GAME_COUNT for this environment.'
               )
             ]),
+        ...(publicPreviewGames > 0
+          ? [
+              issue(
+                'publishing-preview-catalog-entries',
+                'publishing',
+                'warning',
+                `${publicPreviewGames} public catalog entries are still preview-only.`,
+                'Keep preview entries clearly labeled and avoid counting them as launch-ready playable titles.'
+              )
+            ]
+          : []),
         ...(failedQaGames > 0
           ? [
               issue(
@@ -415,6 +430,13 @@ export async function getLaunchReadiness() {
     securityReadiness,
     betaReleaseChecklist,
     rolloutGate,
-    backup
+    backup,
+    catalog: {
+      publicCatalogGames,
+      publicPlayableGames,
+      publicPlayableLocalGames,
+      publicPlayableRemoteGames,
+      publicPreviewGames
+    }
   };
 }
