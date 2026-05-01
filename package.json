@@ -31,7 +31,8 @@
     "ops:restore:dry-run": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/restore-postgres.ps1 -DryRun",
     "ops:observability:verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-observability.ps1",
     "ops:release:verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deployment-smoke.ps1 -ReleaseVerify",
-    "ops:smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deployment-smoke.ps1"
+    "ops:smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deployment-smoke.ps1",
+    "ops:docker:proof": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/docker-proof.ps1"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.7.0",
