@@ -1,71 +1,190 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { GameSection } from '@/components/home/game-section';
 import { HeroSection } from '@/components/home/hero-section';
 import { PixloOriginals } from '@/components/home/pixlo-originals';
 import { PageContainer } from '@/components/ui/page-container';
+import { SectionHeader } from '@/components/ui/section-header';
+import { categories } from '@/data/games';
 import { isPlayableLocalGame } from '@/lib/catalog-semantics';
 import { getHomepageData } from '@/lib/content-selectors';
-import { pickHomepageLane } from '@/lib/homepage-surfacing';
+import { dedupeGamesById, pickHomepageLane } from '@/lib/homepage-surfacing';
 import { createPageMetadata } from '@/lib/metadata';
+import type { Game, GameCategory } from '@/types/game';
 
 export const metadata: Metadata = createPageMetadata(
-  'Play HTML5 Browser Games Instantly',
-  'Discover fast, premium HTML5 browser games across racing, action, puzzle, arcade, multiplayer, sports, and adventure.',
+  'Play Free Browser Games Instantly',
+  'Play quick, free HTML5 browser games on PixloGames with no downloads, no login, and mobile-friendly Pixlo Originals.',
   {
     path: '/'
   }
 );
 
+const trendingPrioritySlugs = [
+  'panda-mart',
+  'endless-runner',
+  'memory-match',
+  'block-puzzle',
+  'number-merge',
+  '2048',
+  'snake',
+  'brick-breaker',
+  'flappy-flight',
+  'color-sort',
+  'tic-tac-toe'
+];
+
+const originalsPrioritySlugs = [
+  'panda-mart',
+  'endless-runner',
+  'memory-match',
+  'block-puzzle',
+  'number-merge',
+  'flappy-flight',
+  'color-sort',
+  '2048',
+  'snake',
+  'brick-breaker'
+];
+
+const quickPlayPrioritySlugs = [
+  'tic-tac-toe',
+  '2048',
+  'snake',
+  'color-sort',
+  'memory-match',
+  'flappy-flight',
+  'brick-breaker'
+];
+
+const mobilePrioritySlugs = [
+  'panda-mart',
+  'memory-match',
+  'block-puzzle',
+  'number-merge',
+  'color-sort',
+  '2048',
+  'snake',
+  'tic-tac-toe'
+];
+
+function categoryHref(categoryName: GameCategory) {
+  const category = categories.find((candidate) => candidate.name === categoryName);
+
+  return category ? `/categories/${category.slug}` : '/categories';
+}
+
+const categoryShortcuts = [
+  {
+    label: 'Arcade',
+    href: categoryHref('Arcade'),
+    description: 'Fast score chasing and classic reflex loops.'
+  },
+  {
+    label: 'Puzzle',
+    href: categoryHref('Puzzle'),
+    description: 'Logic games with clean rules and quick wins.'
+  },
+  {
+    label: 'Runner',
+    href: '/games?tag=runner',
+    description: 'Jump, dodge, and chase one more run.'
+  },
+  {
+    label: 'Management',
+    href: categoryHref('Management'),
+    description: 'Upgrade shops, resources, and tiny systems.'
+  },
+  {
+    label: 'Casual',
+    href: '/games?tag=casual',
+    description: 'Easy starts for relaxed browser sessions.'
+  },
+  {
+    label: 'Action',
+    href: categoryHref('Action'),
+    description: 'Immediate pressure, movement, and reaction play.'
+  }
+];
+
+function isPixloOriginal(game: Game) {
+  return game.sourceOrigin === 'first_party' && isPlayableLocalGame(game);
+}
+
+function orderGamesByPreferredSlugs(games: Game[], preferredSlugs: string[], fallbackGames: Game[]) {
+  const sourceGames = dedupeGamesById([...games, ...fallbackGames]);
+  const gamesBySlug = new Map(sourceGames.map((game) => [game.slug, game]));
+  const preferredGames = preferredSlugs
+    .map((slug) => gamesBySlug.get(slug))
+    .filter((game): game is Game => Boolean(game));
+  const preferredIds = new Set(preferredGames.map((game) => game.id));
+  const remainingGames = sourceGames.filter((game) => !preferredIds.has(game.id));
+
+  return [...preferredGames, ...remainingGames];
+}
+
 export default async function HomePage() {
-  const { allGames, quickPlayGames, touchFriendlyGames, newGames, homepageEligibleGames } =
+  const { quickPlayGames, touchFriendlyGames, newGames, trendingGames, homepageEligibleGames } =
     await getHomepageData();
-  const allOriginals = homepageEligibleGames.filter(isPlayableLocalGame).sort((a, b) => {
-    return b.featuredPriority - a.featuredPriority;
-  });
-  const popularGames = [...homepageEligibleGames].sort((a, b) => b.plays - a.plays).slice(0, 8);
-  const heroGame = allOriginals[0] ?? homepageEligibleGames[0] ?? allGames[0];
-  const homepageSeenGameIds = new Set<string>(heroGame ? [heroGame.id] : []);
-  const heroSideGames = pickHomepageLane(
-    [...allOriginals.slice(1), ...quickPlayGames, ...touchFriendlyGames, ...popularGames],
+  const allOriginals = orderGamesByPreferredSlugs(
+    homepageEligibleGames.filter(isPixloOriginal),
+    originalsPrioritySlugs,
+    []
+  );
+  const trendingNow = orderGamesByPreferredSlugs(
+    trendingGames,
+    trendingPrioritySlugs,
+    homepageEligibleGames
+  ).slice(0, 8);
+  const pixloOriginals = allOriginals.slice(0, 5);
+  const homepageSeenGameIds = new Set<string>([
+    ...trendingNow.map((game) => game.id),
+    ...pixloOriginals.map((game) => game.id)
+  ]);
+  const quickPlays = pickHomepageLane(
+    orderGamesByPreferredSlugs(quickPlayGames, quickPlayPrioritySlugs, homepageEligibleGames),
     homepageSeenGameIds,
     {
-      limit: 2,
-      minVisible: 2
+      limit: 5,
+      minVisible: 5
     }
   );
-  const pixloOriginals = pickHomepageLane(allOriginals, homepageSeenGameIds, {
-    limit: 2,
-    minVisible: 2
-  });
-  const quickPlays = pickHomepageLane(quickPlayGames, homepageSeenGameIds, {
-    limit: 3,
-    minVisible: 3
-  });
-  const mobilePicks = pickHomepageLane(touchFriendlyGames, homepageSeenGameIds, {
-    limit: 3,
-    minVisible: 3
-  });
+  const mobilePicks = pickHomepageLane(
+    orderGamesByPreferredSlugs(touchFriendlyGames, mobilePrioritySlugs, homepageEligibleGames),
+    homepageSeenGameIds,
+    {
+      limit: 6,
+      minVisible: 4
+    }
+  );
   const newReleasePicks = pickHomepageLane(newGames, homepageSeenGameIds, {
-    limit: 3,
-    minVisible: 3
+    limit: 4,
+    minVisible: 4
   });
 
   return (
     <main>
-      {heroGame ? (
-        <HeroSection
-          heroGame={heroGame}
-          originalCount={allOriginals.length}
-          sideGames={heroSideGames}
-        />
-      ) : null}
-      <PageContainer className="space-y-8 pb-12 pt-7 sm:space-y-10 sm:pb-14 sm:pt-9 lg:space-y-12 lg:pb-16 lg:pt-12">
+      <HeroSection
+        originalCount={allOriginals.length}
+        playableCount={homepageEligibleGames.length}
+      />
+      <PageContainer className="space-y-8 pb-12 pt-5 sm:space-y-10 sm:pb-14 sm:pt-7 lg:space-y-11 lg:pb-16 lg:pt-9">
+        {trendingNow.length > 0 ? (
+          <GameSection
+            eyebrow="Most played"
+            title="Trending Now"
+            description="Jump into the games Pixlo players should see first, led by polished Originals and fast local favorites."
+            games={trendingNow}
+            dense
+            actionHref="/games?sort=popular"
+          />
+        ) : null}
         {pixloOriginals.length > 0 ? <PixloOriginals games={pixloOriginals} /> : null}
         {quickPlays.length > 0 ? (
           <GameSection
             eyebrow="Quick plays"
-            title="Start a round in seconds"
-            description="Fast-loading games with simple controls, short loops, and easy replay when you only have a few minutes."
+            title="Quick Plays"
+            description="Simple rules, short loops, and clean restarts for when you want to play right away."
             games={quickPlays}
             dense
             actionHref="/games?tag=casual"
@@ -74,8 +193,8 @@ export default async function HomePage() {
         {mobilePicks.length > 0 ? (
           <GameSection
             eyebrow="Touch-friendly"
-            title="Great on mobile"
-            description="Tap, swipe, and simple touch controls make these picks comfortable on phones, tablets, and laptops."
+            title="Great on Mobile"
+            description="Tap, swipe, and responsive layouts make these games comfortable on phones, tablets, and laptops."
             games={mobilePicks}
             dense
             actionHref="/games?mobile=1"
@@ -85,12 +204,52 @@ export default async function HomePage() {
           <GameSection
             eyebrow="Fresh drops"
             title="New Releases"
-            description="Recently added HTML5 games prepared for quick starts, clear controls, and mobile-friendly sessions."
+            description="Recently added games, kept compact so discovery stays quick."
             games={newReleasePicks}
             dense
             actionHref="/games?sort=newest&new=1"
           />
         ) : null}
+
+        <section aria-labelledby="browse-by-category-title">
+          <SectionHeader
+            description="Pick a familiar style and get to a playable game quickly."
+            eyebrow="Browse"
+            title="Browse by Category"
+            titleId="browse-by-category-title"
+          />
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {categoryShortcuts.map((category) => (
+              <Link
+                className="rounded-lg border border-white/10 bg-white/[0.045] p-4 transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.07] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/70"
+                href={category.href}
+                key={category.label}
+              >
+                <h3 className="font-display text-lg font-bold text-foreground">
+                  {category.label}
+                </h3>
+                <p className="mt-2 text-sm leading-5 text-muted">{category.description}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-labelledby="free-browser-games-title"
+          className="border-t border-white/10 pt-6"
+        >
+          <h2
+            className="font-display text-xl font-bold text-foreground"
+            id="free-browser-games-title"
+          >
+            Free browser games on PixloGames
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-base">
+            PixloGames is a free browser games platform for instant HTML5 play. Browse Pixlo
+            Originals, quick puzzle games, arcade classics, and mobile-friendly picks without
+            downloading an app or creating an account.
+          </p>
+        </section>
       </PageContainer>
     </main>
   );
