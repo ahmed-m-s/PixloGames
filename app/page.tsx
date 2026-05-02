@@ -111,7 +111,11 @@ function isPixloOriginal(game: Game) {
   return game.sourceOrigin === 'first_party' && isPlayableLocalGame(game);
 }
 
-function orderGamesByPreferredSlugs(games: Game[], preferredSlugs: string[], fallbackGames: Game[]) {
+function orderGamesByPreferredSlugs(
+  games: Game[],
+  preferredSlugs: string[],
+  fallbackGames: Game[]
+) {
   const sourceGames = dedupeGamesById([...games, ...fallbackGames]);
   const gamesBySlug = new Map(sourceGames.map((game) => [game.slug, game]));
   const preferredGames = preferredSlugs
@@ -225,9 +229,7 @@ export default async function HomePage() {
                 href={category.href}
                 key={category.label}
               >
-                <h3 className="font-display text-lg font-bold text-foreground">
-                  {category.label}
-                </h3>
+                <h3 className="font-display text-lg font-bold text-foreground">{category.label}</h3>
                 <p className="mt-2 text-sm leading-5 text-muted">{category.description}</p>
               </Link>
             ))}
