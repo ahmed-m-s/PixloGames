@@ -31,6 +31,30 @@ const nextConfig = {
         ]
       }
     ];
+  },
+  async redirects() {
+    return [
+      {
+        source: '/games/panda-mart/index.html',
+        destination: '/playable-games/panda-mart/index.html',
+        permanent: false
+      },
+      {
+        source: '/games/panda-mart/game.js',
+        destination: '/playable-games/panda-mart/game.js',
+        permanent: false
+      },
+      {
+        source: '/games/panda-mart/style.css',
+        destination: '/playable-games/panda-mart/style.css',
+        permanent: false
+      },
+      {
+        source: '/games/panda-mart/assets/:path*',
+        destination: '/playable-games/panda-mart/assets/:path*',
+        permanent: false
+      }
+    ];
   }
 };
 

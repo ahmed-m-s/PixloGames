@@ -1,10 +1,13 @@
 # Game Embed Trust Boundary
 
-PixloGames currently hosts trusted first-party HTML5 games under `public/games/[slug]` and renders them through the shared iframe player. Those packages are treated as trusted PixloGames code.
+PixloGames currently hosts trusted first-party HTML5 games under `public/games/[slug]` or
+`public/playable-games/[slug]` and renders them through the shared iframe player. Those packages are
+treated as trusted PixloGames code.
 
 ## Current Policy
 
-- Trusted first-party local packages may use `/games/[slug]/index.html`.
+- Trusted first-party local packages may use `/games/[slug]/index.html` or
+  `/playable-games/[slug]/index.html`.
 - First-party local packages receive `allow-scripts allow-same-origin allow-pointer-lock` so existing games can use browser storage and run normally.
 - Developer submissions, publisher feeds, and other non-first-party embeds must use HTTPS remote URLs.
 - Non-first-party embeds are sandboxed without `allow-same-origin` and without `allow-forms`.

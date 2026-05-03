@@ -14,6 +14,7 @@ import { ResponsiveGrid } from '@/components/ui/responsive-grid';
 import { categories } from '@/data/games';
 import { useRecentlyPlayed } from '@/hooks/use-recently-played';
 import { trackEvent } from '@/lib/analytics';
+import { isPreviewCatalogEntry } from '@/lib/catalog-semantics';
 import { formatDate } from '@/lib/format';
 import type { Game } from '@/types/game';
 
@@ -73,6 +74,7 @@ export function GameDetail({ game, relatedGames }: GameDetailProps) {
   const { addRecentlyPlayed } = useRecentlyPlayed();
   const [playRequestKey, setPlayRequestKey] = useState(0);
   const category = categories.find((candidate) => candidate.name === game.category);
+  const isPreview = isPreviewCatalogEntry(game);
   const playNextGame = relatedGames[0];
   const playNextReasons = playNextGame ? getRecommendationReasons(game, playNextGame) : [];
   const discoverySignals = getCurrentGameDiscoverySignals(game);
@@ -215,7 +217,7 @@ export function GameDetail({ game, relatedGames }: GameDetailProps) {
                   onClick={handlePlayNow}
                   size="lg"
                 >
-                  Play now
+                  {isPreview ? 'Open preview' : 'Play now'}
                 </Button>
               </div>
               <div className="mt-5 grid grid-cols-2 gap-3">
@@ -239,7 +241,9 @@ export function GameDetail({ game, relatedGames }: GameDetailProps) {
                     </p>
                   </div>
                   <span className="shrink-0 rounded-full border border-white/10 bg-black/[0.25] px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-foreground transition group-hover:border-brand/35 group-hover:text-brand">
-                    Play now
+                    {playNextGame && isPreviewCatalogEntry(playNextGame)
+                      ? 'View preview'
+                      : 'Play now'}
                   </span>
                 </div>
                 <p className="mt-3 line-clamp-2 text-sm leading-6 text-muted">

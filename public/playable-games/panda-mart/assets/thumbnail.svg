@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Panda Mart thumbnail</title>
+  <desc id="desc">A cute panda beside bamboo shelves in a forest mart.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#1f6b39" />
+      <stop offset="1" stop-color="#08140d" />
+    </linearGradient>
+    <linearGradient id="floor" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#3b8d4c" />
+      <stop offset="1" stop-color="#1f512d" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="420" rx="34" fill="url(#bg)" />
+  <circle cx="100" cy="70" r="92" fill="#70f0a4" opacity=".18" />
+  <circle cx="560" cy="360" r="120" fill="#ffd166" opacity=".14" />
+  <rect x="56" y="86" width="528" height="282" rx="28" fill="url(#floor)" stroke="#ffffff" stroke-opacity=".16" stroke-width="4" />
+  <rect x="382" y="130" width="126" height="144" rx="16" fill="#7c5434" />
+  <rect x="398" y="162" width="94" height="12" rx="6" fill="#4b2f1d" opacity=".5" />
+  <rect x="398" y="218" width="94" height="12" rx="6" fill="#4b2f1d" opacity=".5" />
+  <g stroke="#d8f07a" stroke-linecap="round" stroke-width="13">
+    <path d="M407 150h42" />
+    <path d="M452 151h34" />
+    <path d="M406 206h39" />
+    <path d="M452 207h34" />
+    <path d="M414 251h46" />
+  </g>
+  <rect x="108" y="226" width="124" height="98" rx="18" fill="#2c773d" stroke="#d8f07a" stroke-opacity=".45" stroke-width="4" />
+  <g stroke="#d8f07a" stroke-linecap="round" stroke-width="12">
+    <path d="M130 260h34" />
+    <path d="M172 260h34" />
+    <path d="M130 292h34" />
+    <path d="M172 292h34" />
+  </g>
+  <g transform="translate(288 236)">
+    <ellipse cx="0" cy="62" rx="62" ry="18" fill="#000" opacity=".22" />
+    <circle cx="-42" cy="-44" r="24" fill="#101915" />
+    <circle cx="42" cy="-44" r="24" fill="#101915" />
+    <circle cx="0" cy="0" r="70" fill="#f7fff8" />
+    <ellipse cx="-22" cy="-8" rx="17" ry="24" fill="#101915" transform="rotate(-22 -22 -8)" />
+    <ellipse cx="22" cy="-8" rx="17" ry="24" fill="#101915" transform="rotate(22 22 -8)" />
+    <circle cx="-17" cy="-13" r="5" fill="#f7fff8" />
+    <circle cx="17" cy="-13" r="5" fill="#f7fff8" />
+    <circle cx="0" cy="18" r="9" fill="#101915" />
+    <rect x="-34" y="44" width="68" height="34" rx="14" fill="#a8703e" />
+    <path d="M-24 61h28M6 62h26" stroke="#d8f07a" stroke-width="10" stroke-linecap="round" />
+  </g>
+  <rect x="402" y="298" width="126" height="42" rx="21" fill="#ffd166" />
+  <text x="465" y="326" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="900" fill="#1b1503">+5 coins</text>
+  <text x="68" y="64" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#f5fff6">Panda Mart</text>
+</svg>

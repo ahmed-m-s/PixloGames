@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { categories } from '@/data/games';
 import { absoluteUrl } from '@/lib/config';
-import { listGames } from '@/lib/repositories/content-repository';
+import { listGames } from '@/lib/games';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const games = await listGames();

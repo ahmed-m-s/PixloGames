@@ -12,8 +12,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:smoke": "playwright test --config=playwright.config.ts tests/e2e/public-game-journey.spec.ts",
-    "test:a11y": "playwright test --config=playwright.config.ts tests/e2e/public-a11y.spec.ts",
+    "test:catalog:runtime": "vitest run tests/runtime-catalog-drift.test.ts",
+    "test:smoke": "playwright test --config=playwright.config.ts --project=chromium tests/e2e/public-game-journey.spec.ts",
+    "test:smoke:mobile": "playwright test --config=playwright.config.ts --project=mobile-chromium tests/e2e/public-game-journey.spec.ts",
+    "test:verify:games": "playwright test --config=playwright.config.ts --project=chromium tests/e2e/playable-games-verification.spec.ts",
+    "test:a11y": "playwright test --config=playwright.config.ts --project=chromium tests/e2e/public-a11y.spec.ts",
     "test:smoke:install": "playwright install chromium",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
@@ -29,8 +32,10 @@
     "ops:backup": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/backup-postgres.ps1",
     "ops:backup:dry-run": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/backup-postgres.ps1 -DryRun",
     "ops:restore:dry-run": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/restore-postgres.ps1 -DryRun",
+    "ops:observability:verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-observability.ps1",
     "ops:release:verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deployment-smoke.ps1 -ReleaseVerify",
-    "ops:smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deployment-smoke.ps1"
+    "ops:smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deployment-smoke.ps1",
+    "ops:docker:proof": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/docker-proof.ps1"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.7.0",

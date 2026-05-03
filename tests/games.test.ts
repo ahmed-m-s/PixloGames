@@ -12,6 +12,7 @@ import {
   getGameBySlug,
   getGamesByIds,
   getRelatedGames,
+  listGames as listGamesWithFallback,
   searchGames
 } from '@/lib/games';
 
@@ -29,7 +30,7 @@ describe('game discovery selectors', () => {
       id: 'game-current',
       slug: 'current-puzzle',
       category: 'Puzzle',
-      tags: ['logic', 'grid', 'mobile'],
+      tags: ['unit-alpha', 'unit-beta', 'unit-gamma', 'unit-delta', 'unit-epsilon'],
       difficulty: 'medium',
       featuredWeight: 10
     });
@@ -37,7 +38,7 @@ describe('game discovery selectors', () => {
       id: 'game-strong-match',
       slug: 'block-puzzle',
       category: 'Puzzle',
-      tags: ['logic', 'grid', 'casual'],
+      tags: ['unit-alpha', 'unit-beta', 'unit-gamma', 'unit-delta', 'unit-epsilon'],
       isEditorsPick: true,
       featuredWeight: 20
     });
@@ -45,8 +46,8 @@ describe('game discovery selectors', () => {
       id: 'game-mobile-match',
       slug: 'memory-match',
       category: 'Puzzle',
-      tags: ['memory', 'mobile'],
-      difficulty: 'easy',
+      tags: ['unit-alpha', 'unit-beta', 'unit-gamma', 'unit-delta'],
+      difficulty: 'medium',
       featuredWeight: 15
     });
     const popularButUnrelated = makeGame({
@@ -85,9 +86,15 @@ describe('game discovery selectors', () => {
       })
     ]);
 
-    await expect(searchGames('memory')).resolves.toHaveLength(1);
-    await expect(searchGames('editors pick')).resolves.toHaveLength(1);
-    await expect(searchGames('hot')).resolves.toHaveLength(1);
+    await expect(searchGames('memory')).resolves.toEqual(
+      expect.arrayContaining([expect.objectContaining({ slug: 'memory-match' })])
+    );
+    await expect(searchGames('editors pick')).resolves.toEqual(
+      expect.arrayContaining([expect.objectContaining({ slug: 'memory-match' })])
+    );
+    await expect(searchGames('hot')).resolves.toEqual(
+      expect.arrayContaining([expect.objectContaining({ slug: 'endless-runner' })])
+    );
     await expect(searchGames('')).resolves.toEqual([]);
   });
 
@@ -97,6 +104,48 @@ describe('game discovery selectors', () => {
 
     expect(getCategoryBySlug('puzzle')?.name).toBe('Puzzle');
     await expect(getGameBySlug('lookup-game')).resolves.toEqual(game);
+  });
+
+  it('falls back to canonical Panda Mart when the repository lookup misses', async () => {
+    mockedGetGameBySlug.mockResolvedValue(undefined);
+
+    await expect(getGameBySlug('panda-mart')).resolves.toMatchObject({
+      id: 'game-panda-mart',
+      slug: 'panda-mart',
+      embedUrl: '/playable-games/panda-mart/index.html',
+      source: expect.objectContaining({
+        url: '/playable-games/panda-mart/index.html'
+      })
+    });
+  });
+
+  it('keeps repository data authoritative when Panda Mart exists in the database', async () => {
+    const databaseGame = makeGame({
+      id: 'game-panda-mart-db',
+      slug: 'panda-mart',
+      title: 'Panda Mart DB',
+      embedUrl: '/database/panda-mart/index.html'
+    });
+    mockedGetGameBySlug.mockResolvedValue(databaseGame);
+
+    await expect(getGameBySlug('panda-mart')).resolves.toEqual(databaseGame);
+  });
+
+  it('merges missing canonical games into public discovery without duplicating repository games', async () => {
+    mockedListGames.mockResolvedValue([
+      makeGame({ id: 'game-memory-match', slug: 'memory-match' })
+    ]);
+
+    const games = await listGamesWithFallback();
+    const pandaMartMatches = games.filter((game) => game.slug === 'panda-mart');
+    const memoryMatchMatches = games.filter((game) => game.slug === 'memory-match');
+
+    expect(pandaMartMatches).toHaveLength(1);
+    expect(pandaMartMatches[0]).toMatchObject({
+      embedUrl: '/playable-games/panda-mart/index.html'
+    });
+    expect(memoryMatchMatches).toHaveLength(1);
+    expect(mockedListGames).toHaveBeenCalledWith({});
   });
 
   it('returns games by id in the requested order while skipping missing ids', async () => {

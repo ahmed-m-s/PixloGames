@@ -12,7 +12,7 @@ import type {
 } from '@/types/operations';
 
 type HostingReadinessInput = {
-  publicGames: number;
+  publicPlayableGames: number;
   failedQaGames: number;
   approvedUnpublished: number;
   activeInternalUsers: number;
@@ -284,14 +284,14 @@ function rolloutStageReadiness(input: HostingReadinessInput): RolloutStageReadin
       : [])
   ];
   const publicBetaWarnings = [
-    ...(input.publicGames < appConfig.rollout.minBetaPublicGames
+    ...(input.publicPlayableGames < appConfig.rollout.minBetaPublicGames
       ? [
           issue(
             'public-beta-content',
             'content',
             'warning',
-            `Only ${input.publicGames} public games are available for beta.`,
-            `Publish at least ${appConfig.rollout.minBetaPublicGames} QA-passed games for a useful public beta.`
+            `Only ${input.publicPlayableGames} public playable games are available for beta.`,
+            `Publish at least ${appConfig.rollout.minBetaPublicGames} playable QA-passed games for a useful public beta.`
           )
         ]
       : []),
@@ -388,14 +388,14 @@ function groupIssues(
         ]
   );
   const contentIssues = [
-    ...(input.publicGames < appConfig.rollout.minBetaPublicGames
+    ...(input.publicPlayableGames < appConfig.rollout.minBetaPublicGames
       ? [
           issue(
             'content-beta-count',
             'content',
             'warning',
-            `Only ${input.publicGames} public games are ready for beta.`,
-            `Publish at least ${appConfig.rollout.minBetaPublicGames} QA-passed games for public beta.`
+            `Only ${input.publicPlayableGames} public playable games are ready for beta.`,
+            `Publish at least ${appConfig.rollout.minBetaPublicGames} playable QA-passed games for public beta.`
           )
         ]
       : []),
@@ -515,8 +515,8 @@ function recommendedNextStep(input: HostingReadinessInput, groups: LaunchBlocker
     return firstBlocker.action;
   }
 
-  if (input.publicGames < appConfig.rollout.minBetaPublicGames) {
-    return `Publish at least ${appConfig.rollout.minBetaPublicGames} QA-passed games before public beta.`;
+  if (input.publicPlayableGames < appConfig.rollout.minBetaPublicGames) {
+    return `Publish at least ${appConfig.rollout.minBetaPublicGames} playable QA-passed games before public beta.`;
   }
 
   if (appConfig.hostingTarget === 'local-dev') {

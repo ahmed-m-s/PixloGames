@@ -4,6 +4,7 @@ import { appConfig, getConfigWarnings } from '@/lib/config';
 import { prisma } from '@/lib/db/prisma';
 import { getMediaProviderDiagnostics } from '@/lib/media/storage-provider';
 import { getAlertProviderDiagnostics } from '@/lib/monitoring/alerts';
+import { summarizeCatalogEntries } from '@/lib/catalog-semantics';
 import { getBackupReadiness } from '@/lib/operations/backup';
 import {
   getDeploymentProfile,
@@ -12,6 +13,7 @@ import {
 } from '@/lib/operations/deployment';
 import { getHostingTargetReadiness } from '@/lib/operations/hosting';
 import { getSecurityReadiness } from '@/lib/operations/security';
+import { listGames } from '@/lib/repositories/content-repository';
 
 export type PublicHealthStatus = 'ok' | 'degraded';
 
@@ -42,13 +44,9 @@ export async function getPublicHealth() {
     adActivationState: adProvider.activationState
   });
   try {
-    const [publicGames, failedQaGames, submissions, mediaAssets, activeInternalUsers] =
+    const [publicCatalog, failedQaGames, submissions, mediaAssets, activeInternalUsers] =
       await Promise.all([
-        prisma.game.count({
-          where: {
-            visibility: 'public'
-          }
-        }),
+        listGames(),
         prisma.game.count({
           where: {
             qaStatus: 'failed'
@@ -62,8 +60,14 @@ export async function getPublicHealth() {
           }
         })
       ]);
+    const catalogSummary = summarizeCatalogEntries(publicCatalog);
+    const publicCatalogGames = catalogSummary.totalEntries;
+    const publicPlayableGames = catalogSummary.playableEntries;
+    const publicPlayableLocalGames = catalogSummary.playableLocalEntries;
+    const publicPlayableRemoteGames = catalogSummary.playableRemoteEntries;
+    const publicPreviewGames = catalogSummary.previewEntries;
     const rolloutGate = getRolloutGate({
-      publicGames,
+      publicPlayableGames,
       failedQaGames,
       activeInternalUsers,
       mediaStatus: mediaProvider.status,
@@ -74,9 +78,9 @@ export async function getPublicHealth() {
       backupStatus: backup.status
     });
     const healthWarnings =
-      publicGames < appConfig.monitoring.expectedPublicGameCount
+      publicPlayableGames < appConfig.monitoring.expectedPublicGameCount
         ? [
-            `Public game count ${publicGames} is below expected launch threshold ${appConfig.monitoring.expectedPublicGameCount}.`,
+            `Public playable game count ${publicPlayableGames} is below expected launch threshold ${appConfig.monitoring.expectedPublicGameCount}.`,
             ...warnings
           ]
         : warnings;
@@ -102,7 +106,12 @@ export async function getPublicHealth() {
           ? ('warning' as const)
           : ('ok' as const),
       checks: {
-        publicGames,
+        publicGames: publicPlayableGames,
+        publicCatalogGames,
+        publicPlayableGames,
+        publicPlayableLocalGames,
+        publicPlayableRemoteGames,
+        publicPreviewGames,
         expectedPublicGames: appConfig.monitoring.expectedPublicGameCount,
         minBetaPublicGames: appConfig.rollout.minBetaPublicGames,
         minProductionPublicGames: appConfig.rollout.minProductionPublicGames,
@@ -144,6 +153,11 @@ export async function getPublicHealth() {
       alertLevel: 'critical' as const,
       checks: {
         publicGames: 0,
+        publicCatalogGames: 0,
+        publicPlayableGames: 0,
+        publicPlayableLocalGames: 0,
+        publicPlayableRemoteGames: 0,
+        publicPreviewGames: 0,
         expectedPublicGames: appConfig.monitoring.expectedPublicGameCount,
         submissions: 0,
         mediaAssets: 0,
@@ -169,8 +183,8 @@ export async function getPublicHealth() {
 
 export async function getInternalDiagnostics() {
   const [
+    runtimeGames,
     totalGames,
-    publicGames,
     draftGames,
     failedQaGames,
     activeInternalUsers,
@@ -183,12 +197,8 @@ export async function getInternalDiagnostics() {
     adPlacementRows,
     adPlacements
   ] = await Promise.all([
+    listGames({ includeInternal: true }),
     prisma.game.count(),
-    prisma.game.count({
-      where: {
-        visibility: 'public'
-      }
-    }),
     prisma.game.count({
       where: {
         OR: [
@@ -249,6 +259,13 @@ export async function getInternalDiagnostics() {
     }),
     prisma.adPlacement.count()
   ]);
+  const publicCatalog = runtimeGames.filter((game) => game.visibility === 'public');
+  const catalogSummary = summarizeCatalogEntries(publicCatalog);
+  const publicCatalogGames = catalogSummary.totalEntries;
+  const publicPlayableGames = catalogSummary.playableEntries;
+  const publicPlayableLocalGames = catalogSummary.playableLocalEntries;
+  const publicPlayableRemoteGames = catalogSummary.playableRemoteEntries;
+  const publicPreviewGames = catalogSummary.previewEntries;
 
   const mediaProvider = getMediaProviderDiagnostics();
   const analyticsProvider = getAnalyticsProviderDiagnostics();
@@ -262,7 +279,7 @@ export async function getInternalDiagnostics() {
     }))
   );
   const rolloutGate = getRolloutGate({
-    publicGames,
+    publicPlayableGames,
     failedQaGames,
     activeInternalUsers,
     mediaStatus: mediaProvider.status,
@@ -283,7 +300,7 @@ export async function getInternalDiagnostics() {
     adActivationState: adProvider.activationState
   });
   const hostingTargetReadiness = getHostingTargetReadiness({
-    publicGames,
+    publicPlayableGames,
     failedQaGames,
     approvedUnpublished,
     activeInternalUsers,
@@ -320,7 +337,12 @@ export async function getInternalDiagnostics() {
     environment: appConfig.environment,
     counts: {
       totalGames,
-      publicGames,
+      publicGames: publicPlayableGames,
+      publicCatalogGames,
+      publicPlayableGames,
+      publicPlayableLocalGames,
+      publicPlayableRemoteGames,
+      publicPreviewGames,
       draftGames,
       failedQaGames,
       activeInternalUsers,

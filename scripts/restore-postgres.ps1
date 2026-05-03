@@ -59,6 +59,27 @@ function Resolve-CommandPath([string]$configured, [string]$fallbackName) {
   throw "Required command '$configured' was not found. Set PIXLO_PG_RESTORE_PATH or add PostgreSQL bin tools to PATH."
 }
 
+function Resolve-PostgresToolDatabaseUrl([string]$databaseUrl) {
+  try {
+    $builder = [System.UriBuilder]::new($databaseUrl)
+    $query = $builder.Query.TrimStart("?")
+
+    if ($query) {
+      $keptQueryParts = $query.Split("&") | Where-Object {
+        $name = $_.Split("=", 2)[0]
+
+        $name -ine "schema"
+      }
+
+      $builder.Query = ($keptQueryParts -join "&")
+    }
+
+    return $builder.Uri.AbsoluteUri
+  } catch {
+    return ($databaseUrl -replace "([?&])schema=[^&]*&?", '$1').TrimEnd("?", "&")
+  }
+}
+
 Import-LocalDotEnv
 
 if ([string]::IsNullOrWhiteSpace($env:DATABASE_URL)) {
@@ -67,6 +88,7 @@ if ([string]::IsNullOrWhiteSpace($env:DATABASE_URL)) {
 
 $localMediaRoot = Join-Path (Get-Location) "storage\media"
 $pgRestore = Resolve-CommandPath $env:PIXLO_PG_RESTORE_PATH "pg_restore"
+$postgresToolDatabaseUrl = Resolve-PostgresToolDatabaseUrl $env:DATABASE_URL
 
 Write-Host "Database restore command: $pgRestore"
 Write-Host "This restore uses --clean --if-exists against DATABASE_URL."
@@ -91,7 +113,7 @@ if (!(Test-Path -LiteralPath $databaseDump)) {
 
 Write-Host "PixloGames restore source: $resolvedBackupDirectory"
 
-& $pgRestore --clean --if-exists --no-owner --no-privileges --dbname $env:DATABASE_URL $databaseDump
+& $pgRestore --clean --if-exists --no-owner --no-privileges --dbname $postgresToolDatabaseUrl $databaseDump
 
 if ($LASTEXITCODE -ne 0) {
   throw "pg_restore failed with exit code $LASTEXITCODE."
@@ -103,3 +125,4 @@ if (Test-Path -LiteralPath $mediaArchive) {
 }
 
 Write-Host "Restore complete. Run /api/health and /internal/readiness next."
+Write-Host "Next recommended proof: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-restore.ps1"

@@ -7,8 +7,8 @@ import { PageContainer } from '@/components/ui/page-container';
 import { ResponsiveGrid } from '@/components/ui/responsive-grid';
 import { Pill } from '@/components/ui/pill';
 import { browseGames, getTagsFromGames, parseBrowseState } from '@/lib/browse';
+import { listGames } from '@/lib/games';
 import { createPageMetadata } from '@/lib/metadata';
-import { listGames } from '@/lib/repositories/content-repository';
 import type { BrowseSearchParams } from '@/types/browse';
 
 type SearchPageProps = {

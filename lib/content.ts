@@ -54,7 +54,8 @@ const categoryStudios: Record<GameCategory, { developer: string; publisher: stri
   Multiplayer: { developer: 'Relay Room Games', publisher: 'Pixlo Arena' },
   Shooting: { developer: 'Orbit Forge', publisher: 'Pixlo Publishing' },
   Sports: { developer: 'Pocket Stadium', publisher: 'Pixlo Sports' },
-  Arcade: { developer: 'Cabinet Club', publisher: 'Pixlo Select' }
+  Arcade: { developer: 'Cabinet Club', publisher: 'Pixlo Select' },
+  Management: { developer: 'PixloGames Lab', publisher: 'PixloGames' }
 };
 
 const releaseDates = [
