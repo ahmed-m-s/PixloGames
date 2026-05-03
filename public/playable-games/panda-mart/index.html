@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Panda Mart is a cozy PixloGames HTML5 shop management game."
+    />
+    <title>Panda Mart | PixloGames</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Panda Mart game">
+      <section class="game-card">
+        <header class="top-bar">
+          <div class="brand-lockup">
+            <p class="eyebrow">Pixlo Original</p>
+            <h1>Panda Mart</h1>
+          </div>
+
+          <section class="top-hud" aria-label="Current shop stats">
+            <div class="hud-badge" aria-label="Coins">
+              <span class="hud-icon hud-icon--coin" aria-hidden="true">
+                <svg viewBox="0 0 32 32" focusable="false">
+                  <circle cx="16" cy="16" r="12" />
+                  <path d="M16 8v16M10.5 12.5h8.2a3.5 3.5 0 0 1 0 7H13" />
+                </svg>
+              </span>
+              <strong id="coinsValue">0</strong>
+              <span class="sr-only">coins</span>
+            </div>
+            <div class="hud-badge" aria-label="Carry bamboo">
+              <span class="hud-icon hud-icon--basket" aria-hidden="true">
+                <svg viewBox="0 0 32 32" focusable="false">
+                  <path d="M8 14h16l-2 11H10L8 14Z" />
+                  <path d="M11 14a5 5 0 0 1 10 0" />
+                  <path d="M13 19h6M15 23h5" />
+                </svg>
+              </span>
+              <strong id="carryValue">0 / 3</strong>
+              <span class="sr-only">carried bamboo</span>
+            </div>
+            <div class="hud-badge" aria-label="Shelf stock">
+              <span class="hud-icon hud-icon--shelf" aria-hidden="true">
+                <svg viewBox="0 0 32 32" focusable="false">
+                  <path d="M7 9h18v16H7z" />
+                  <path d="M7 15h18M7 21h18" />
+                  <path d="M11 12h4M17 18h5M10 24h6" />
+                </svg>
+              </span>
+              <strong id="shelfValue">0 / 5</strong>
+              <span class="sr-only">shelf stock</span>
+            </div>
+            <div class="hud-badge" aria-label="Guests">
+              <span class="hud-icon hud-icon--guest" aria-hidden="true">
+                <svg viewBox="0 0 32 32" focusable="false">
+                  <circle cx="13" cy="12" r="5" />
+                  <circle cx="22" cy="14" r="4" />
+                  <path d="M5.5 26a7.6 7.6 0 0 1 15 0" />
+                  <path d="M17 26a6 6 0 0 1 10 0" />
+                </svg>
+              </span>
+              <strong id="customersValue">0</strong>
+              <span class="sr-only">guests</span>
+            </div>
+          </section>
+
+          <div class="top-actions">
+            <button class="small-button" id="pauseButton" type="button">Pause</button>
+            <button class="small-button" id="restartButton" type="button">Restart</button>
+          </div>
+        </header>
+
+        <section class="status-strip" aria-label="Panda Mart status">
+          <span class="status-icon" aria-hidden="true">
+            <svg viewBox="0 0 32 32" focusable="false">
+              <path d="M7 19c6-8 12-8 18 0" />
+              <path d="M9 22c4-4 10-4 14 0" />
+              <circle cx="16" cy="12" r="4" />
+            </svg>
+          </span>
+          <p id="statusText">Open the mart to begin.</p>
+          <span class="level-pill" id="levelsValue">Lv 1 / 1 / 1</span>
+          <span class="save-pill" id="saveStatus" aria-live="polite">Saved</span>
+        </section>
+
+        <section class="game-body">
+          <div class="stage" id="gameStage" tabindex="0">
+            <canvas
+              id="gameCanvas"
+              width="960"
+              height="600"
+              aria-label="Top-down Panda Mart shop"
+            ></canvas>
+
+            <div class="screen-overlay is-visible" id="startScreen">
+              <div class="screen-panel">
+                <p class="eyebrow">Bamboo shop shift</p>
+                <h2>Stock shelves. Serve guests. Upgrade the mart.</h2>
+                <p>
+                  Walk through the bamboo patch to gather stock, then step up to the shelf to
+                  restock it for your cozy little shop. Your coins and upgrades save locally.
+                </p>
+                <button class="game-button" id="startButton" type="button">Start Shift</button>
+                <span class="control-note">
+                  Move with WASD or arrows. Harvesting and shelf restocking happen automatically.
+                </span>
+              </div>
+            </div>
+
+            <div class="screen-overlay" id="pauseScreen">
+              <div class="screen-panel">
+                <p class="eyebrow">Shift paused</p>
+                <h2>Take a bamboo break.</h2>
+                <p>Press P, Escape, or the pause button to continue.</p>
+                <button class="game-button" id="resumeButton" type="button">Resume</button>
+              </div>
+            </div>
+
+            <div class="touch-controls" aria-label="Touch controls">
+              <div class="touch-pad" aria-label="Move panda">
+                <button data-dir="up" type="button">Up</button>
+                <button data-dir="left" type="button">Left</button>
+                <button data-dir="down" type="button">Down</button>
+                <button data-dir="right" type="button">Right</button>
+              </div>
+              <button class="interact-button" id="touchInteractButton" type="button">Auto</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="support-panel" aria-label="Panda Mart upgrades and help">
+          <section class="upgrade-card" aria-label="Shop upgrades">
+            <p class="eyebrow">Upgrades</p>
+            <div class="upgrade-row">
+              <button class="upgrade-button" data-upgrade="carry" type="button">
+                <span class="upgrade-icon upgrade-icon--basket" aria-hidden="true">
+                  <svg viewBox="0 0 32 32" focusable="false">
+                    <path d="M8 14h16l-2 11H10L8 14Z" />
+                    <path d="M11 14a5 5 0 0 1 10 0" />
+                  </svg>
+                </span>
+                <span>
+                  <strong>Carry</strong>
+                  <small>More bamboo</small>
+                </span>
+                <b id="carryCost">30</b>
+              </button>
+              <button class="upgrade-button" data-upgrade="speed" type="button">
+                <span class="upgrade-icon upgrade-icon--speed" aria-hidden="true">
+                  <svg viewBox="0 0 32 32" focusable="false">
+                    <path d="M8 21h8M6 16h12M10 11h8" />
+                    <path d="M19 9l6 7-6 7" />
+                  </svg>
+                </span>
+                <span>
+                  <strong>Speed</strong>
+                  <small>Move faster</small>
+                </span>
+                <b id="speedCost">40</b>
+              </button>
+              <button class="upgrade-button" data-upgrade="shelf" type="button">
+                <span class="upgrade-icon upgrade-icon--shelf" aria-hidden="true">
+                  <svg viewBox="0 0 32 32" focusable="false">
+                    <path d="M7 9h18v16H7z" />
+                    <path d="M7 16h18M11 13h5M16 21h6" />
+                  </svg>
+                </span>
+                <span>
+                  <strong>Shelf</strong>
+                  <small>More stock</small>
+                </span>
+                <b id="shelfCost">35</b>
+              </button>
+              <button class="upgrade-button assistant-button" id="assistantButton" type="button">
+                <span class="upgrade-icon upgrade-icon--assistant" aria-hidden="true">
+                  <svg viewBox="0 0 32 32" focusable="false">
+                    <circle cx="16" cy="9" r="4" />
+                    <path d="M10 18c1.8-3 10.2-3 12 0v7H10z" />
+                    <path d="M8 22h16M12 13l-4 4M20 13l4 4" />
+                  </svg>
+                </span>
+                <span>
+                  <strong>Helper</strong>
+                  <small id="assistantStatus">Locked</small>
+                </span>
+                <b id="assistantCost">120</b>
+              </button>
+            </div>
+          </section>
+
+          <section class="guide-card" aria-label="Tutorial and saved progress">
+            <div class="guide-heading">
+              <p class="eyebrow">Guide</p>
+              <span class="tutorial-pill" id="tutorialStatus">Step 1</span>
+            </div>
+            <p id="tutorialText">Walk into the garden to collect bamboo.</p>
+            <div class="save-tools">
+              <span class="save-note">Local save</span>
+              <button class="reset-button" id="resetProgressButton" type="button">
+                Reset save
+              </button>
+            </div>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <script src="./game.js" defer></script>
+  </body>
+</html>

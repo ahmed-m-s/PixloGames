@@ -111,11 +111,61 @@ img {
   opacity: 1;
 }
 
+.game-player-shell,
+.game-player-viewport,
+.game-player-frame {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.game-player-viewport {
+  width: 100%;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: auto;
+}
+
+.game-player-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+}
+
+.game-player-shell[data-player-active='true'] .game-player-viewport,
+.game-player-shell[data-player-active='true'] .game-player-frame {
+  touch-action: none;
+}
+
+.game-player-viewport--landscape {
+  height: min(62.5vw, 64vh);
+  height: min(62.5vw, 64svh);
+  min-height: min(220px, calc(100vh - 128px));
+  min-height: min(220px, calc(100svh - 128px));
+  max-height: calc(100vh - 128px);
+  max-height: calc(100svh - 128px);
+}
+
+.game-player-viewport--portrait,
+.game-player-viewport--responsive {
+  height: min(72vh, 560px);
+  height: min(72svh, 560px);
+  min-height: min(420px, calc(100vh - 128px));
+  min-height: min(420px, calc(100svh - 128px));
+  max-height: calc(100vh - 128px);
+  max-height: calc(100svh - 128px);
+}
+
 .game-player-viewport:fullscreen {
   width: 100vw;
+  width: 100dvw;
   height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
+  min-height: 100dvh;
   max-height: 100vh;
+  max-height: 100dvh;
   overflow: hidden;
   border-radius: 0;
   background: #000;
@@ -124,6 +174,46 @@ img {
 .game-player-viewport:fullscreen iframe {
   width: 100%;
   height: 100%;
+}
+
+@media (min-width: 640px) {
+  .game-player-viewport--landscape {
+    height: auto;
+    min-height: 320px;
+    max-height: none;
+    aspect-ratio: 16 / 9;
+  }
+
+  .game-player-viewport--portrait {
+    height: 700px;
+    min-height: 700px;
+    max-height: none;
+  }
+
+  .game-player-viewport--responsive {
+    height: 680px;
+    min-height: 680px;
+    max-height: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .game-player-viewport--landscape {
+    min-height: 560px;
+  }
+
+  .game-player-viewport--portrait,
+  .game-player-viewport--responsive {
+    height: 760px;
+    min-height: 760px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .game-player-viewport--responsive {
+    height: 820px;
+    min-height: 820px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

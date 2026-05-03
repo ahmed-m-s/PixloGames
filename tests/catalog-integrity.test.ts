@@ -3,12 +3,14 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { gameCollections } from '@/data/collections';
 import { categories, games } from '@/data/games';
+import { isPlayableLocalGame } from '@/lib/catalog-semantics';
 import { mapCollectionToDbData, mapGameToDbData } from '@/lib/repositories/prisma-mappers';
 import type { Game } from '@/types/game';
 
 const projectRoot = process.cwd();
 const localPackageFiles = ['index.html', 'style.css', 'game.js'] as const;
 const localArtworkFields = ['thumbnail', 'coverImage'] as const;
+const localPackageBasePaths = ['/games', '/playable-games'] as const;
 
 function expectUnique(values: string[], label: string) {
   const duplicates = values.filter((value, index) => values.indexOf(value) !== index);
@@ -25,7 +27,18 @@ function isExternalAsset(value: string) {
 }
 
 function isLocalHtml5Package(game: Game) {
-  return game.embedType === 'html5-package' || game.embedUrl.startsWith('/games/');
+  return (
+    game.embedType === 'html5-package' ||
+    localPackageBasePaths.some((basePath) => game.embedUrl.startsWith(`${basePath}/`))
+  );
+}
+
+function getExpectedLocalPackageUrls(game: Game) {
+  return localPackageBasePaths.map((basePath) => `${basePath}/${game.slug}/index.html`);
+}
+
+function getLocalPackageRoot(game: Game) {
+  return game.embedUrl.replace(/\/index\.html$/, '');
 }
 
 describe('catalog integrity', () => {
@@ -96,11 +109,17 @@ describe('catalog integrity', () => {
 
   it('keeps local HTML5 game packages and artwork available on disk', () => {
     for (const game of games.filter(isLocalHtml5Package)) {
-      const packageRoot = path.join(projectRoot, 'public', 'games', game.slug);
+      const packagePublicRoot = getLocalPackageRoot(game);
+      const packageRoot = path.join(projectRoot, 'public', packagePublicRoot.replace(/^\/+/, ''));
 
-      expect(game.embedUrl, `${game.title} should use its standard local package URL`).toBe(
-        `/games/${game.slug}/index.html`
-      );
+      expect(
+        getExpectedLocalPackageUrls(game),
+        `${game.title} should use an approved local package URL`
+      ).toContain(game.embedUrl);
+      expect(
+        isPlayableLocalGame(game),
+        `${game.title} should remain classified as a playable local package`
+      ).toBe(true);
       expect(game.hasRealEmbed, `${game.title} should be marked playable`).toBe(true);
       expect(game.source.mode, `${game.title} source mode should match playable package`).toBe(
         'embedded'
@@ -112,7 +131,7 @@ describe('catalog integrity', () => {
       for (const fileName of localPackageFiles) {
         expect(
           existsSync(path.join(packageRoot, fileName)),
-          `${game.title} is missing public/games/${game.slug}/${fileName}`
+          `${game.title} is missing public${packagePublicRoot}/${fileName}`
         ).toBe(true);
       }
 

@@ -8,7 +8,8 @@ export type GameCategory =
   | 'Multiplayer'
   | 'Shooting'
   | 'Sports'
-  | 'Arcade';
+  | 'Arcade'
+  | 'Management';
 
 export type GameBadge = 'New' | 'Trending' | 'Multiplayer' | "Editor's Pick";
 

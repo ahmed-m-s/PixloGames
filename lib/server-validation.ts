@@ -58,7 +58,8 @@ const validCategories = new Set([
   'Multiplayer',
   'Shooting',
   'Sports',
-  'Arcade'
+  'Arcade',
+  'Management'
 ]);
 
 const validPlatforms = new Set<GameSupportedPlatform>(['desktop', 'mobile', 'tablet', 'gamepad']);
