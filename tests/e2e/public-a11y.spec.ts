@@ -11,7 +11,7 @@ const publicA11yRoutes: A11yRoute[] = [
   {
     name: 'homepage',
     path: '/',
-    landmark: /play polished browser games the second you arrive/i
+    landmark: /play free browser games instantly/i
   },
   {
     name: 'games browse',
