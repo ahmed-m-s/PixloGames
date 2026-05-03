@@ -8,12 +8,24 @@ test.describe('public game journey', () => {
 
     await expect(
       page.getByRole('heading', {
-        name: /play polished browser games the second you arrive/i
+        name: /play free browser games instantly/i
       })
     ).toBeVisible();
     await expect(primaryNavigation.getByRole('link', { name: /^games$/i })).toBeVisible();
     await expect(primaryNavigation.getByRole('link', { name: /submit game/i })).toBeVisible();
-    await expect(page.getByRole('heading', { name: /start a round in seconds/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /trending now/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /pixlo originals/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /quick plays/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /great on mobile/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /new releases/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /browse by category/i })).toBeVisible();
+
+    await page.getByRole('link', { name: /^browse games$/i }).click();
+
+    await expect(page).toHaveURL(/\/games$/);
+    await expect(
+      page.getByRole('heading', { name: /browse games built for instant play/i })
+    ).toBeVisible();
   });
 
   test('browse page renders game cards and discovery controls', async ({ page }) => {

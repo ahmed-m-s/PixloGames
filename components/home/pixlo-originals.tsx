@@ -17,7 +17,6 @@ export function PixloOriginals({ games }: PixloOriginalsProps) {
   }
 
   const [leadGame, ...supportingGames] = games;
-  const lineupLabel = games.length === 4 ? 'the featured Originals' : 'the playable Originals';
 
   return (
     <section aria-labelledby="pixlo-originals-title">
@@ -27,9 +26,9 @@ export function PixloOriginals({ games }: PixloOriginalsProps) {
             View Originals
           </LinkButton>
         }
-        description="First-party HTML5 games built for fast loading, clean controls, and replayable browser sessions."
+        description="Exclusive browser games from PixloGames Lab, built for fast loading, clean controls, and quick sessions on desktop or mobile."
         eyebrow="Pixlo Originals"
-        title={`Start with ${lineupLabel}`}
+        title="Pixlo Originals"
         titleId="pixlo-originals-title"
       />
 
@@ -49,9 +48,8 @@ export function PixloOriginals({ games }: PixloOriginalsProps) {
           <div className="absolute inset-0 bg-[linear-gradient(0deg,rgb(0_0_0_/_0.84),rgb(0_0_0_/_0.1)_54%),linear-gradient(90deg,rgb(0_0_0_/_0.72),transparent_70%)]" />
           <div className="relative z-10 flex h-full min-h-[280px] flex-col justify-between p-5 sm:min-h-[340px] sm:p-6">
             <div className="flex flex-wrap gap-2">
-              <Pill tone="brand">First-party</Pill>
-              <Pill tone="aqua">Playable now</Pill>
-              <Pill tone="sun">{leadGame.difficulty}</Pill>
+              <Pill tone="brand">Original</Pill>
+              {leadGame.mobileSupported ? <Pill tone="aqua">Mobile-friendly</Pill> : null}
             </div>
 
             <div className="max-w-2xl">
@@ -95,7 +93,7 @@ export function PixloOriginals({ games }: PixloOriginalsProps) {
               </span>
               <span className="flex min-w-0 flex-col justify-center">
                 <span className="text-xs font-bold uppercase tracking-[0.14em] text-brand">
-                  {game.category} original
+                  Original
                 </span>
                 <span className="mt-1 font-display text-xl font-bold text-foreground transition group-hover:text-brand">
                   {game.title}
