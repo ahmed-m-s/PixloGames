@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { GameSection } from '@/components/home/game-section';
-import { HeroSection } from '@/components/home/hero-section';
 import { PixloOriginals } from '@/components/home/pixlo-originals';
 import { PageContainer } from '@/components/ui/page-container';
 import { SectionHeader } from '@/components/ui/section-header';
@@ -168,16 +167,12 @@ export default async function HomePage() {
 
   return (
     <main>
-      <HeroSection
-        originalCount={allOriginals.length}
-        playableCount={homepageEligibleGames.length}
-      />
-      <PageContainer className="space-y-8 pb-12 pt-5 sm:space-y-10 sm:pb-14 sm:pt-7 lg:space-y-11 lg:pb-16 lg:pt-9">
+      <PageContainer className="space-y-8 pb-12 pt-3 sm:space-y-10 sm:pb-14 sm:pt-4 lg:space-y-11 lg:pb-16 lg:pt-5">
         {trendingNow.length > 0 ? (
           <GameSection
             eyebrow="Most played"
             title="Trending Now"
-            description="Jump into the games Pixlo players should see first, led by polished Originals and fast local favorites."
+            description="Free instant-play browser games. No downloads. Desktop and mobile."
             games={trendingNow}
             dense
             actionHref="/games?sort=popular"
