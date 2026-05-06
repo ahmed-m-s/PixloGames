@@ -45,7 +45,7 @@ export function GameSection({
         titleTone={titleTone}
       />
       <ResponsiveGrid
-        className={homepageGrid ? 'sm:grid-cols-3 xl:grid-cols-5' : undefined}
+        className={homepageGrid ? 'gap-3 sm:grid-cols-3 lg:gap-4 xl:grid-cols-5' : undefined}
         dense={dense}
       >
         {games.map((game, index) => (

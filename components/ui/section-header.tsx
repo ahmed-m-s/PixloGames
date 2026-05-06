@@ -24,7 +24,7 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        'mb-5 flex flex-col gap-4 sm:mb-7 sm:flex-row sm:items-end sm:justify-between',
+        'mb-4 flex flex-col gap-3 sm:mb-5 sm:flex-row sm:items-center sm:justify-between',
         className
       )}
     >
@@ -32,11 +32,11 @@ export function SectionHeader({
         {eyebrow ? <Pill tone="brand">{eyebrow}</Pill> : null}
         <h2
           className={cn(
-            'font-display text-2xl font-bold leading-tight sm:text-3xl',
-            eyebrow && 'mt-3',
+            'font-display font-bold leading-tight',
+            eyebrow && 'mt-2',
             titleTone === 'brand'
-              ? 'text-brand [text-shadow:0_0_24px_rgb(98_255_174_/_0.22)]'
-              : 'text-foreground'
+              ? 'inline-flex w-fit rounded-lg border border-brand/25 bg-brand/[0.1] px-3 py-1.5 text-xl text-brand shadow-[0_0_28px_rgb(98_255_174_/_0.12)] sm:text-2xl'
+              : 'text-2xl text-foreground sm:text-3xl'
           )}
           id={titleId}
         >

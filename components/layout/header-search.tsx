@@ -32,7 +32,7 @@ export function HeaderSearch() {
       <label className="relative block">
         <span className="sr-only">Search games</span>
         <input
-          className="h-11 w-full rounded-lg border border-white/10 bg-white/[0.07] px-4 text-sm font-medium text-foreground outline-none transition placeholder:text-muted/70 focus:border-brand/[0.55] focus:bg-white/10"
+          className="h-10 w-full rounded-lg border border-white/10 bg-white/[0.08] px-4 text-sm font-semibold text-foreground outline-none transition placeholder:text-muted/70 focus:border-brand/[0.55] focus:bg-white/[0.12]"
           defaultValue={currentQuery}
           key={currentQuery}
           name="q"
