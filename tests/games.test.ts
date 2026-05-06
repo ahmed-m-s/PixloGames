@@ -119,7 +119,7 @@ describe('game discovery selectors', () => {
     });
   });
 
-  it('keeps repository data authoritative when Panda Mart exists in the database', async () => {
+  it('keeps repository data authoritative while allowing first-party canonical thumbnail overrides', async () => {
     const databaseGame = makeGame({
       id: 'game-panda-mart-db',
       slug: 'panda-mart',
@@ -128,7 +128,10 @@ describe('game discovery selectors', () => {
     });
     mockedGetGameBySlug.mockResolvedValue(databaseGame);
 
-    await expect(getGameBySlug('panda-mart')).resolves.toEqual(databaseGame);
+    await expect(getGameBySlug('panda-mart')).resolves.toEqual({
+      ...databaseGame,
+      thumbnail: '/playable-games/panda-mart/assets/thumbnail.jpg'
+    });
   });
 
   it('merges missing canonical games into public discovery without duplicating repository games', async () => {
