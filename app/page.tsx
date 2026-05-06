@@ -138,7 +138,7 @@ export default async function HomePage() {
     trendingGames,
     trendingPrioritySlugs,
     homepageEligibleGames
-  ).slice(0, 8);
+  ).slice(0, 10);
   const pixloOriginals = allOriginals.slice(0, 5);
   const homepageSeenGameIds = new Set<string>([
     ...trendingNow.map((game) => game.id),
@@ -170,12 +170,13 @@ export default async function HomePage() {
       <PageContainer className="space-y-8 pb-12 pt-3 sm:space-y-10 sm:pb-14 sm:pt-4 lg:space-y-11 lg:pb-16 lg:pt-5">
         {trendingNow.length > 0 ? (
           <GameSection
-            eyebrow="Most played"
             title="Trending Now"
-            description="Free instant-play browser games. No downloads. Desktop and mobile."
             games={trendingNow}
             dense
-            actionHref="/games?sort=popular"
+            homepageGrid
+            titleTone="brand"
+            variant="homepage"
+            actionHref="/games?sort=trending"
           />
         ) : null}
         {pixloOriginals.length > 0 ? <PixloOriginals games={pixloOriginals} /> : null}
@@ -186,6 +187,8 @@ export default async function HomePage() {
             description="Simple rules, short loops, and clean restarts for when you want to play right away."
             games={quickPlays}
             dense
+            homepageGrid
+            variant="homepage"
             actionHref="/games?tag=casual"
           />
         ) : null}
@@ -196,6 +199,8 @@ export default async function HomePage() {
             description="Tap, swipe, and responsive layouts make these games comfortable on phones, tablets, and laptops."
             games={mobilePicks}
             dense
+            homepageGrid
+            variant="homepage"
             actionHref="/games?mobile=1"
           />
         ) : null}
@@ -206,6 +211,8 @@ export default async function HomePage() {
             description="Recently added games, kept compact so discovery stays quick."
             games={newReleasePicks}
             dense
+            homepageGrid
+            variant="homepage"
             actionHref="/games?sort=newest&new=1"
           />
         ) : null}

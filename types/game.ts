@@ -110,7 +110,7 @@ export type Game = {
   mediaAssets?: MediaAsset[];
 };
 
-export type GameCardVariant = 'default' | 'compact' | 'featured';
+export type GameCardVariant = 'default' | 'compact' | 'featured' | 'homepage';
 
 export type RecentlyPlayedEntry = {
   gameId: string;

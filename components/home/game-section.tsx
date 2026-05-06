@@ -5,13 +5,15 @@ import { SectionHeader } from '@/components/ui/section-header';
 import type { Game, GameCardVariant } from '@/types/game';
 
 type GameSectionProps = {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
-  description: string;
+  description?: string;
   games: Game[];
   variant?: GameCardVariant;
   dense?: boolean;
+  homepageGrid?: boolean;
   actionHref?: string;
+  titleTone?: 'default' | 'brand';
 };
 
 export function GameSection({
@@ -19,11 +21,13 @@ export function GameSection({
   title,
   description,
   games,
-  variant = 'default',
+  variant,
   dense = false,
-  actionHref = '/games'
+  homepageGrid = false,
+  actionHref = '/games',
+  titleTone = 'default'
 }: GameSectionProps) {
-  const cardVariant = dense ? 'compact' : variant;
+  const cardVariant = variant ?? (dense ? 'compact' : 'default');
   const titleId = `${title.toLowerCase().replaceAll(' ', '-')}-title`;
 
   return (
@@ -38,8 +42,12 @@ export function GameSection({
         eyebrow={eyebrow}
         title={title}
         titleId={titleId}
+        titleTone={titleTone}
       />
-      <ResponsiveGrid dense={dense}>
+      <ResponsiveGrid
+        className={homepageGrid ? 'sm:grid-cols-3 xl:grid-cols-5' : undefined}
+        dense={dense}
+      >
         {games.map((game, index) => (
           <GameCard game={game} key={game.id} priority={index < 2} variant={cardVariant} />
         ))}
