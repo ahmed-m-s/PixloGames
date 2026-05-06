@@ -30,17 +30,12 @@ export function SiteHeader() {
                 <span className="rounded-[4px] bg-aqua" />
                 <span className="rounded-[4px] bg-sun" />
               </span>
-              <span>
-                <span className="block font-display text-lg font-bold leading-none text-foreground sm:text-xl">
-                  PixloGames
-                </span>
-                <span className="mt-0.5 block text-xs font-semibold uppercase text-brand/80">
-                  Play instantly
-                </span>
+              <span className="block font-display text-lg font-semibold leading-none text-foreground sm:text-xl">
+                PixloGames
               </span>
             </Link>
             <Link
-              className="rounded-lg bg-brand px-3 py-2 text-sm font-bold text-black transition hover:bg-brand-strong lg:hidden"
+              className="rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-black transition hover:bg-brand-strong lg:hidden"
               href="/games"
             >
               Play
@@ -61,7 +56,7 @@ export function SiteHeader() {
             <div className="flex min-w-max items-center gap-1 lg:min-w-0 lg:flex-wrap lg:justify-end">
               {navItems.map((item) => (
                 <Link
-                  className="rounded-lg px-2.5 py-1.5 text-sm font-semibold text-muted transition hover:bg-white/[0.08] hover:text-foreground"
+                  className="rounded-lg px-2.5 py-1.5 text-sm font-medium text-muted transition hover:bg-white/[0.08] hover:text-foreground"
                   href={item.href}
                   key={item.href}
                 >
@@ -69,7 +64,7 @@ export function SiteHeader() {
                 </Link>
               ))}
               <Link
-                className="ml-1 rounded-lg border border-brand/35 bg-brand/[0.08] px-2.5 py-1.5 text-sm font-bold text-foreground transition hover:border-brand/55 hover:bg-brand/[0.14] hover:text-brand"
+                className="ml-1 rounded-lg border border-brand/30 bg-brand/[0.07] px-2.5 py-1 text-sm font-semibold text-foreground transition hover:border-brand/50 hover:bg-brand/[0.13] hover:text-brand"
                 href={developerCta.href}
               >
                 {developerCta.label}
