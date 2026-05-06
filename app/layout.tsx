@@ -1,21 +1,14 @@
 import type { Metadata } from 'next';
-import { Inter, Space_Grotesk } from 'next/font/google';
+import { Fredoka } from 'next/font/google';
 import type { ReactNode } from 'react';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
 import { appConfig } from '@/lib/config';
-import { cn } from '@/lib/utils';
 import './globals.css';
 
-const inter = Inter({
+const fredoka = Fredoka({
   subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap'
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-space-grotesk',
+  variable: '--font-fredoka',
   display: 'swap'
 });
 
@@ -51,7 +44,7 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html data-scroll-behavior="smooth" lang="en">
-      <body className={cn(inter.variable, spaceGrotesk.variable)}>
+      <body className={fredoka.variable}>
         <div className="min-h-screen bg-page text-foreground">
           <SiteHeader />
           {children}

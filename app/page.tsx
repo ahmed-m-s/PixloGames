@@ -167,7 +167,7 @@ export default async function HomePage() {
 
   return (
     <main>
-      <PageContainer className="space-y-8 pb-12 pt-3 sm:space-y-10 sm:pb-14 sm:pt-4 lg:space-y-11 lg:pb-16 lg:pt-5">
+      <PageContainer className="space-y-6 pb-10 pt-3 sm:space-y-8 sm:pb-12 sm:pt-4 lg:space-y-9 lg:pb-14">
         {trendingNow.length > 0 ? (
           <GameSection
             title="Trending Now"
@@ -184,7 +184,6 @@ export default async function HomePage() {
           <GameSection
             eyebrow="Quick plays"
             title="Quick Plays"
-            description="Simple rules, short loops, and clean restarts for when you want to play right away."
             games={quickPlays}
             dense
             homepageGrid
@@ -196,7 +195,6 @@ export default async function HomePage() {
           <GameSection
             eyebrow="Touch-friendly"
             title="Great on Mobile"
-            description="Tap, swipe, and responsive layouts make these games comfortable on phones, tablets, and laptops."
             games={mobilePicks}
             dense
             homepageGrid
@@ -208,7 +206,6 @@ export default async function HomePage() {
           <GameSection
             eyebrow="Fresh drops"
             title="New Releases"
-            description="Recently added games, kept compact so discovery stays quick."
             games={newReleasePicks}
             dense
             homepageGrid

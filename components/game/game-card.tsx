@@ -56,8 +56,8 @@ export function GameCard({
       <motion.article
         className={cn(
           'card-glow group overflow-hidden rounded-lg bg-white/[0.055] shadow-card',
-          'surface-border transition duration-200 hover:border-brand/35 hover:shadow-[0_24px_70px_rgb(98_255_174_/_0.12)]',
-          'focus-within:border-brand/60 focus-within:ring-2 focus-within:ring-brand/20',
+          'surface-border transition duration-200 hover:border-brand/55 hover:shadow-[0_22px_60px_rgb(98_255_174_/_0.16)]',
+          'focus-within:border-brand/60 focus-within:ring-2 focus-within:ring-brand/25',
           variantClasses[variant],
           className
         )}
@@ -81,22 +81,20 @@ export function GameCard({
           <div className="relative aspect-[16/10] overflow-hidden bg-surface-strong">
             <Image
               alt={`${game.title} game thumbnail`}
-              className="h-full w-full object-cover brightness-105 contrast-125 saturate-125 transition duration-500 group-hover:scale-105 group-hover:brightness-110 group-hover:saturate-150"
+              className="h-full w-full object-cover brightness-110 contrast-125 saturate-150 transition duration-500 group-hover:scale-105 group-hover:brightness-125 group-hover:saturate-200"
               fill
               priority={priority}
               sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 33vw, 100vw"
               src={game.thumbnail}
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(255_255_255_/_0.05),transparent_32%),linear-gradient(0deg,rgb(0_0_0_/_0.28),transparent_46%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(255_255_255_/_0.07),transparent_28%),linear-gradient(0deg,rgb(0_0_0_/_0.82),rgb(0_0_0_/_0.46)_24%,transparent_58%)]" />
             <span
               aria-hidden
-              className="absolute bottom-3 left-3 inline-flex translate-y-1 rounded-full border border-brand/30 bg-black/[0.62] px-3 py-1 text-xs font-black text-brand opacity-0 backdrop-blur transition duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
+              className="absolute left-3 top-3 inline-flex translate-y-1 rounded-full border border-brand/30 bg-black/[0.62] px-3 py-1 text-xs font-black text-brand opacity-0 backdrop-blur transition duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
             >
               Play
             </span>
-          </div>
-          <div className="flex min-h-[58px] items-center border-t border-white/[0.08] bg-[linear-gradient(180deg,rgb(255_255_255_/_0.06),rgb(255_255_255_/_0.025))] px-3.5 py-3">
-            <h3 className="line-clamp-2 font-display text-base font-bold leading-snug text-foreground transition group-hover:text-brand sm:text-lg">
+            <h3 className="absolute bottom-3 left-3 right-3 line-clamp-2 font-display text-xl font-bold leading-[1.05] text-white drop-shadow-[0_2px_14px_rgb(0_0_0_/_0.92)] transition group-hover:text-brand sm:text-2xl">
               {game.title}
             </h3>
           </div>
