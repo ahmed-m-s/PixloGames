@@ -74,7 +74,7 @@ export const games: Game[] = prepareGameContent([
     shortDescription: 'Jump cleanly, dodge fast obstacles, and survive as the pace keeps climbing.',
     description:
       'A polished HTML5 endless runner built for quick browser sessions. Time your jumps, stay ahead of the speed curve, and chase a better best score on desktop, tablet, or phone.',
-    thumbnail: '/games/endless-runner/assets/thumbnail.svg',
+    thumbnail: '/games/endless-runner/assets/thumbnail.jpg',
     coverImage: '/games/endless-runner/assets/cover.svg',
     category: 'Arcade',
     tags: ['runner', 'jump', 'endless', 'reflex', 'mobile'],
@@ -129,7 +129,7 @@ export const games: Game[] = prepareGameContent([
     shortDescription: 'Flip polished cards, remember each symbol, and clear the board fast.',
     description:
       'A clean HTML5 memory game built around quick pattern recognition, smooth card flips, and satisfying short-session mastery. Match every pair on the 4x4 board while chasing fewer moves and a faster best time.',
-    thumbnail: '/games/memory-match/assets/thumbnail.svg',
+    thumbnail: '/games/memory-match/assets/thumbnail.jpg',
     coverImage: '/games/memory-match/assets/cover.svg',
     category: 'Puzzle',
     tags: ['memory', 'match', 'cards', 'casual', 'logic', 'mobile'],
@@ -190,7 +190,7 @@ export const games: Game[] = prepareGameContent([
     shortDescription: 'Place clever block pieces, clear rows and columns, and keep the grid alive.',
     description:
       'A polished HTML5 block puzzle built around thoughtful placement, clean line clears, and satisfying score-chasing. Select one of three pieces, fit it onto the 8x8 board, and clear full rows or columns before the grid locks up.',
-    thumbnail: '/games/block-puzzle/assets/thumbnail.svg',
+    thumbnail: '/games/block-puzzle/assets/thumbnail.jpg',
     coverImage: '/games/block-puzzle/assets/cover.svg',
     category: 'Puzzle',
     tags: ['block', 'puzzle', 'grid', 'logic', 'casual', 'mobile'],
@@ -252,7 +252,7 @@ export const games: Game[] = prepareGameContent([
       'Slide number tiles, chain clean merges, and build toward a bigger board score.',
     description:
       'A polished HTML5 number puzzle inspired by classic merge play. Use arrow keys, WASD, or mobile swipes to move every tile, combine matching values, chase the 2048 milestone, and keep the 4x4 board alive for as long as you can.',
-    thumbnail: '/games/number-merge/assets/thumbnail.svg',
+    thumbnail: '/games/number-merge/assets/thumbnail.jpg',
     coverImage: '/games/number-merge/assets/cover.svg',
     category: 'Puzzle',
     tags: ['numbers', 'merge', '2048-style', 'logic', 'casual', 'mobile'],
@@ -308,6 +308,7 @@ export const games: Game[] = prepareGameContent([
   createLocalHtml5Game({
     slug: 'tic-tac-toe',
     title: 'Tic Tac Toe',
+    thumbnail: '/games/tic-tac-toe/assets/thumbnail.jpg',
     shortDescription:
       'Play a clean local duel, claim three squares, and reset instantly for another round.',
     description:
@@ -345,6 +346,7 @@ export const games: Game[] = prepareGameContent([
   createLocalHtml5Game({
     slug: 'flappy-flight',
     title: 'Flappy Flight',
+    thumbnail: '/games/flappy-flight/assets/thumbnail.jpg',
     shortDescription: 'Tap to flap, thread neon gates, and chase a cleaner high-score run.',
     description:
       'A lightweight flappy-style HTML5 arcade game with smooth canvas motion, responsive jump input, local best score tracking, and quick restart loops for instant browser play.',
@@ -381,6 +383,7 @@ export const games: Game[] = prepareGameContent([
   createLocalHtml5Game({
     slug: 'color-sort',
     title: 'Color Sort',
+    thumbnail: '/games/color-sort/assets/thumbnail.jpg',
     shortDescription: 'Pour stacked colors into matching tubes and solve each clean logic puzzle.',
     description:
       'A polished HTML5 color sorting puzzle with simple tap-to-pour controls, readable tubes, valid move rules, win detection, and local best move tracking for quick logic sessions.',
@@ -418,6 +421,7 @@ export const games: Game[] = prepareGameContent([
   createLocalHtml5Game({
     slug: '2048',
     title: '2048',
+    thumbnail: '/games/2048/assets/thumbnail.jpg',
     shortDescription: 'Slide numbered tiles, merge matching values, and keep the board alive.',
     description:
       'A clean browser-ready 2048 puzzle built for quick logic sessions. Use arrow keys, WASD, or mobile swipes to slide every tile, merge matching numbers, and chase a bigger score before the board fills up.',
@@ -452,6 +456,7 @@ export const games: Game[] = prepareGameContent([
   createLocalHtml5Game({
     slug: 'snake',
     title: 'Snake',
+    thumbnail: '/games/snake/assets/thumbnail.jpg',
     shortDescription:
       'Guide the neon snake, collect pickups, and survive without hitting yourself.',
     description:
@@ -484,6 +489,7 @@ export const games: Game[] = prepareGameContent([
   createLocalHtml5Game({
     slug: 'brick-breaker',
     title: 'Brick Breaker',
+    thumbnail: '/games/brick-breaker/assets/thumbnail.jpg',
     shortDescription: 'Bounce the ball, clear bright brick walls, and keep the rally alive.',
     description:
       'A lightweight HTML5 Brick Breaker with smooth paddle control, satisfying clears, local best score tracking, and desktop plus touch support for instant arcade sessions.',
@@ -517,6 +523,7 @@ export const games: Game[] = prepareGameContent([
     slug: 'panda-mart',
     assetBasePath: '/playable-games',
     title: 'Panda Mart',
+    thumbnail: '/playable-games/panda-mart/assets/thumbnail.jpg',
     shortDescription:
       'Run a cozy bamboo shop, stock shelves, serve guests, and upgrade your tiny forest mart.',
     description:
