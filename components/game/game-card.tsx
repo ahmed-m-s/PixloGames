@@ -56,8 +56,8 @@ export function GameCard({
       <motion.article
         className={cn(
           'card-glow group overflow-hidden rounded-lg bg-white/[0.055] shadow-card',
-          'surface-border transition duration-200 hover:border-brand/55 hover:shadow-[0_22px_60px_rgb(98_255_174_/_0.16)]',
-          'focus-within:border-brand/60 focus-within:ring-2 focus-within:ring-brand/25',
+          'surface-border transition duration-200 hover:border-brand/65 hover:shadow-[0_22px_64px_rgb(34_211_238_/_0.14),0_0_28px_rgb(98_255_174_/_0.16)]',
+          'focus-within:border-brand/65 focus-within:ring-2 focus-within:ring-brand/30 focus-within:shadow-[0_18px_54px_rgb(98_255_174_/_0.14)]',
           variantClasses[variant],
           className
         )}
@@ -81,13 +81,13 @@ export function GameCard({
           <div className="relative aspect-[16/10] overflow-hidden bg-surface-strong">
             <Image
               alt={`${game.title} game thumbnail`}
-              className="h-full w-full object-cover brightness-110 contrast-125 saturate-150 transition duration-500 group-hover:scale-105 group-hover:brightness-125 group-hover:saturate-200"
+              className="h-full w-full object-cover brightness-[1.12] contrast-[1.12] saturate-[1.32] transition duration-500 group-hover:scale-105 group-hover:brightness-[1.2] group-hover:contrast-[1.16] group-hover:saturate-[1.45]"
               fill
               priority={priority}
               sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 33vw, 100vw"
               src={game.thumbnail}
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(0_0_0_/_1),rgb(0_0_0_/_1)_34%,rgb(0_0_0_/_0.72)_46%,transparent_62%),linear-gradient(0deg,rgb(0_0_0_/_0.82),rgb(0_0_0_/_0.46)_24%,transparent_58%)]" />
+            <div className="absolute inset-x-0 bottom-0 h-[42%] bg-[linear-gradient(0deg,rgb(0_0_0_/_0.72),rgb(0_0_0_/_0.34)_38%,rgb(0_0_0_/_0)_100%)]" />
             <span
               aria-hidden
               className="absolute left-3 top-3 inline-flex translate-y-1 rounded-full border border-brand/30 bg-black/[0.62] px-2.5 py-1 text-xs font-semibold text-brand opacity-0 backdrop-blur transition duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
