@@ -9,6 +9,7 @@ type SectionHeaderProps = {
   description?: string;
   action?: ReactNode;
   className?: string;
+  titleTone?: 'default' | 'brand';
 };
 
 export function SectionHeader({
@@ -17,7 +18,8 @@ export function SectionHeader({
   titleId,
   description,
   action,
-  className
+  className,
+  titleTone = 'default'
 }: SectionHeaderProps) {
   return (
     <div
@@ -29,7 +31,13 @@ export function SectionHeader({
       <div className="max-w-2xl">
         {eyebrow ? <Pill tone="brand">{eyebrow}</Pill> : null}
         <h2
-          className="mt-3 font-display text-2xl font-bold leading-tight text-foreground sm:text-3xl"
+          className={cn(
+            'font-display text-2xl font-bold leading-tight sm:text-3xl',
+            eyebrow && 'mt-3',
+            titleTone === 'brand'
+              ? 'text-brand [text-shadow:0_0_24px_rgb(98_255_174_/_0.22)]'
+              : 'text-foreground'
+          )}
           id={titleId}
         >
           {title}

@@ -21,7 +21,8 @@ type GameCardProps = {
 const variantClasses: Record<GameCardVariant, string> = {
   default: 'min-h-[360px]',
   compact: 'min-h-[268px]',
-  featured: 'min-h-[420px] sm:min-h-[460px]'
+  featured: 'min-h-[420px] sm:min-h-[460px]',
+  homepage: 'min-h-0'
 };
 
 function getBadges(game: Game): GameBadge[] {
@@ -48,6 +49,70 @@ export function GameCard({
   priority = false,
   className
 }: GameCardProps) {
+  const isHomepage = variant === 'homepage';
+
+  if (isHomepage) {
+    return (
+      <motion.article
+        className={cn(
+          'card-glow group overflow-hidden rounded-lg bg-white/[0.055] shadow-card',
+          'surface-border transition duration-200 hover:border-brand/35 hover:shadow-[0_24px_70px_rgb(98_255_174_/_0.12)]',
+          'focus-within:border-brand/60 focus-within:ring-2 focus-within:ring-brand/20',
+          variantClasses[variant],
+          className
+        )}
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -4 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.32, ease: 'easeOut' }}
+      >
+        <Link
+          className="flex h-full flex-col focus:outline-none"
+          href={`/games/${game.slug}`}
+          onClick={() =>
+            trackEvent('game_click', {
+              gameId: game.id,
+              slug: game.slug,
+              source: 'game_card'
+            })
+          }
+        >
+          <div className="relative aspect-[16/10] overflow-hidden bg-surface-strong">
+            <Image
+              alt={`${game.title} game thumbnail`}
+              className="h-full w-full object-cover brightness-105 contrast-125 saturate-125 transition duration-500 group-hover:scale-105 group-hover:brightness-110 group-hover:saturate-150"
+              fill
+              priority={priority}
+              sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 33vw, 100vw"
+              src={game.thumbnail}
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(255_255_255_/_0.05),transparent_32%),linear-gradient(0deg,rgb(0_0_0_/_0.28),transparent_46%)]" />
+            <span
+              aria-hidden
+              className="absolute bottom-3 left-3 inline-flex translate-y-1 rounded-full border border-brand/30 bg-black/[0.62] px-3 py-1 text-xs font-black text-brand opacity-0 backdrop-blur transition duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
+            >
+              Play
+            </span>
+          </div>
+          <div className="flex min-h-[58px] items-center border-t border-white/[0.08] bg-[linear-gradient(180deg,rgb(255_255_255_/_0.06),rgb(255_255_255_/_0.025))] px-3.5 py-3">
+            <h3 className="line-clamp-2 font-display text-base font-bold leading-snug text-foreground transition group-hover:text-brand sm:text-lg">
+              {game.title}
+            </h3>
+          </div>
+        </Link>
+        <FavoriteButton
+          className="absolute right-2.5 top-2.5 z-20 h-9 w-9 px-0 shadow-[0_8px_26px_rgb(0_0_0_/_0.32)]"
+          gameId={game.id}
+          label="short"
+          onClick={(event) => {
+            event.stopPropagation();
+          }}
+        />
+      </motion.article>
+    );
+  }
+
   const badges = getBadges(game);
   const isCompact = variant === 'compact';
   const isFeatured = variant === 'featured';
