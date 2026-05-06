@@ -29,10 +29,7 @@ function applyCanonicalThumbnailOverride(game: Game) {
     (candidate) => candidate.id === game.id || candidate.slug === game.slug
   );
 
-  if (
-    canonicalGame?.sourceOrigin !== 'first_party' ||
-    !canonicalGame.thumbnail.startsWith('/')
-  ) {
+  if (canonicalGame?.sourceOrigin !== 'first_party' || !canonicalGame.thumbnail.startsWith('/')) {
     return game;
   }
 
