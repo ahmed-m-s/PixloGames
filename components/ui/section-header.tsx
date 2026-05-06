@@ -32,11 +32,11 @@ export function SectionHeader({
         {eyebrow ? <Pill tone="brand">{eyebrow}</Pill> : null}
         <h2
           className={cn(
-            'font-display font-bold leading-tight',
+            'font-display leading-tight',
             eyebrow && 'mt-2',
             titleTone === 'brand'
-              ? 'inline-flex w-fit rounded-lg border border-brand/25 bg-brand/[0.1] px-3 py-1.5 text-xl text-brand shadow-[0_0_28px_rgb(98_255_174_/_0.12)] sm:text-2xl'
-              : 'text-2xl text-foreground sm:text-3xl'
+              ? 'inline-flex w-fit rounded-lg border border-brand/25 bg-brand/[0.09] px-2.5 py-1 text-lg font-semibold text-brand shadow-[0_0_24px_rgb(98_255_174_/_0.1)] sm:text-xl'
+              : 'text-2xl font-bold text-foreground sm:text-3xl'
           )}
           id={titleId}
         >

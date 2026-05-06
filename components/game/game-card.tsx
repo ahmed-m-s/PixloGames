@@ -87,20 +87,20 @@ export function GameCard({
               sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 33vw, 100vw"
               src={game.thumbnail}
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(255_255_255_/_0.07),transparent_28%),linear-gradient(0deg,rgb(0_0_0_/_0.82),rgb(0_0_0_/_0.46)_24%,transparent_58%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(0_0_0_/_1),rgb(0_0_0_/_1)_34%,rgb(0_0_0_/_0.72)_46%,transparent_62%),linear-gradient(0deg,rgb(0_0_0_/_0.82),rgb(0_0_0_/_0.46)_24%,transparent_58%)]" />
             <span
               aria-hidden
-              className="absolute left-3 top-3 inline-flex translate-y-1 rounded-full border border-brand/30 bg-black/[0.62] px-3 py-1 text-xs font-black text-brand opacity-0 backdrop-blur transition duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
+              className="absolute left-3 top-3 inline-flex translate-y-1 rounded-full border border-brand/30 bg-black/[0.62] px-2.5 py-1 text-xs font-semibold text-brand opacity-0 backdrop-blur transition duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
             >
               Play
             </span>
-            <h3 className="absolute bottom-3 left-3 right-3 line-clamp-2 font-display text-xl font-bold leading-[1.05] text-white drop-shadow-[0_2px_14px_rgb(0_0_0_/_0.92)] transition group-hover:text-brand sm:text-2xl">
+            <h3 className="absolute bottom-3 left-3 right-3 line-clamp-2 font-display text-xl font-medium leading-[1.05] text-white drop-shadow-[0_2px_14px_rgb(0_0_0_/_0.92)] transition group-hover:text-brand sm:text-[1.35rem]">
               {game.title}
             </h3>
           </div>
         </Link>
         <FavoriteButton
-          className="absolute right-2.5 top-2.5 z-20 h-9 w-9 px-0 shadow-[0_8px_26px_rgb(0_0_0_/_0.32)]"
+          className="absolute right-2 top-2 z-20 h-8 w-8 px-0 opacity-90 shadow-[0_8px_22px_rgb(0_0_0_/_0.28)] hover:opacity-100"
           gameId={game.id}
           label="short"
           onClick={(event) => {
