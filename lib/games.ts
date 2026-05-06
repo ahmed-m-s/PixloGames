@@ -24,9 +24,25 @@ function sortCanonicalFallbackGames(a: Game, b: Game) {
   );
 }
 
+function applyCanonicalThumbnailOverride(game: Game) {
+  const canonicalGame = canonicalGames.find(
+    (candidate) => candidate.id === game.id || candidate.slug === game.slug
+  );
+
+  if (canonicalGame?.sourceOrigin !== 'first_party' || !canonicalGame.thumbnail.startsWith('/')) {
+    return game;
+  }
+
+  return {
+    ...game,
+    thumbnail: canonicalGame.thumbnail
+  };
+}
+
 function mergeCanonicalFallbackGames(repositoryGames: Game[], query: GameQuery = {}) {
-  const gamesById = new Set(repositoryGames.map((game) => game.id));
-  const gamesBySlug = new Set(repositoryGames.map((game) => game.slug));
+  const normalizedRepositoryGames = repositoryGames.map(applyCanonicalThumbnailOverride);
+  const gamesById = new Set(normalizedRepositoryGames.map((game) => game.id));
+  const gamesBySlug = new Set(normalizedRepositoryGames.map((game) => game.slug));
   const missingCanonicalGames = canonicalGames
     .filter(
       (game) =>
@@ -36,7 +52,7 @@ function mergeCanonicalFallbackGames(repositoryGames: Game[], query: GameQuery =
     )
     .sort(sortCanonicalFallbackGames);
 
-  return [...repositoryGames, ...missingCanonicalGames];
+  return [...normalizedRepositoryGames, ...missingCanonicalGames];
 }
 
 export async function listGames(query: GameQuery = {}) {
@@ -49,7 +65,7 @@ export async function getGameBySlug(slug: string) {
   const repositoryGame = await getGameBySlugFromRepository(slug);
 
   if (repositoryGame) {
-    return repositoryGame;
+    return applyCanonicalThumbnailOverride(repositoryGame);
   }
 
   return canonicalGames.find((game) => game.slug === slug && canUseCanonicalFallback(game));
