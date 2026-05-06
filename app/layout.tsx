@@ -45,7 +45,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html data-scroll-behavior="smooth" lang="en">
       <body className={fredoka.variable}>
-        <div className="min-h-screen bg-page text-foreground">
+        <div className="site-shell min-h-screen text-foreground">
           <SiteHeader />
           {children}
           <SiteFooter />
