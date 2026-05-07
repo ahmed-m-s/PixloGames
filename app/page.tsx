@@ -25,11 +25,11 @@ const trendingPrioritySlugs = [
   'memory-match',
   'block-puzzle',
   'number-merge',
-  '2048',
   'snake',
+  'color-sort',
   'brick-breaker',
   'flappy-flight',
-  'color-sort',
+  '2048',
   'tic-tac-toe'
 ];
 
@@ -167,7 +167,7 @@ export default async function HomePage() {
 
   return (
     <main>
-      <PageContainer className="space-y-6 pb-10 pt-3 sm:space-y-8 sm:pb-12 sm:pt-4 lg:space-y-9 lg:pb-14">
+      <PageContainer className="space-y-5 pb-8 pt-3 sm:space-y-7 sm:pb-10 sm:pt-4 lg:space-y-8 lg:pb-12">
         {trendingNow.length > 0 ? (
           <GameSection
             title="Trending Now"
