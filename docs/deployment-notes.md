@@ -1,0 +1,1 @@
+- 2026-05-11: Trigger a fresh Vercel production deployment after environment variable rotation.
