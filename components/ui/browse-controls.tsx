@@ -32,6 +32,7 @@ const booleanFilters: {
   { key: 'isNew', label: 'New' },
   { key: 'editorsPick', label: "Editor's Pick" }
 ];
+const hiddenCategoryFilters = new Set(['Action', 'Adventure', 'Multiplayer', 'Shooting', 'Sports']);
 
 function filterClassName(active: boolean) {
   return cn(
@@ -102,6 +103,9 @@ export function BrowseControls({
   tagLimit = 12
 }: BrowseControlsProps) {
   const tags = (tagOptions ?? getAllTags()).slice(0, tagLimit);
+  const categoryFilters = categories.filter(
+    (category) => !hiddenCategoryFilters.has(category.name)
+  );
   const activeChips = getActiveFilterChips(pathname, state, keepQueryOnReset);
   const hasFilters = hasActiveBrowseFilters(state, !keepQueryOnReset);
 
@@ -145,7 +149,7 @@ export function BrowseControls({
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted">Category</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            {categories.map((category) => (
+            {categoryFilters.map((category) => (
               <Link
                 className={filterClassName(state.category === category.name)}
                 href={getBrowseHref(pathname, state, {

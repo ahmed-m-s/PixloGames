@@ -4,6 +4,8 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { GameDetail } from '@/components/game/game-detail';
+import { GameMetaRow } from '@/components/game/game-meta-row';
+import { BrowseControls } from '@/components/ui/browse-controls';
 import { gameCollections } from '@/data/collections';
 import { gamePageContentByTitle, targetGamePageContentNames } from '@/data/game-page-content';
 import { categories, games } from '@/data/games';
@@ -15,8 +17,22 @@ import { makeGame } from '@/tests/fixtures';
 import type { Game } from '@/types/game';
 
 const projectRoot = process.cwd();
-const expectedStaticCatalogCount = 49;
+const expectedStaticCatalogCount = 37;
 const expectedGameDistributionGameCount = 26;
+const removedPreviewSlugs = [
+  'rocket-rivals',
+  'neon-driftline',
+  'shadow-sprint',
+  'tile-tempo',
+  'cabinet-clash',
+  'orbit-raiders',
+  'crypt-circuits',
+  'forest-runner',
+  'goalstorm',
+  'micro-mayhem',
+  'battle-bounce',
+  'skyforge-quest'
+] as const;
 const promptListedPixloOriginalSlugs = [
   'endless-runner',
   'memory-match',
@@ -123,6 +139,24 @@ describe('catalog integrity', () => {
     expect(games).toHaveLength(expectedStaticCatalogCount);
     expect(gameDistributionGames).toHaveLength(expectedGameDistributionGameCount);
     expect(targetGamePageContentNames).toHaveLength(31);
+    expect(games.filter((game) => game.source.mode === 'preview')).toHaveLength(0);
+  });
+
+  it('keeps removed preview-entry slugs out of the static catalog', () => {
+    const gameSlugs = new Set(games.map((game) => game.slug));
+
+    for (const slug of removedPreviewSlugs) {
+      expect(gameSlugs.has(slug), `${slug} should be removed from the canonical catalog`).toBe(
+        false
+      );
+    }
+  });
+
+  it('keeps launch metrics reset across all remaining games', () => {
+    for (const game of games) {
+      expect(game.plays, `${game.title} play count should be reset`).toBe(0);
+      expect(game.rating, `${game.title} rating should be reset`).toBe(0);
+    }
   });
 
   it('preserves prompt-listed Pixlo Originals and first-party local playable embeds', () => {
@@ -341,6 +375,48 @@ describe('catalog integrity', () => {
     expect(html).toContain(
       'Mojicon Spring Connect is a relaxing mahjong matching game wrapped in fresh spring visuals'
     );
+  });
+
+  it('renders empty metric states for newly launched and unrated games', () => {
+    const html = renderToStaticMarkup(
+      createElement(GameMetaRow, {
+        game: makeGame({
+          mobileSupported: false,
+          plays: 0,
+          rating: 0
+        })
+      })
+    );
+
+    expect(html).toContain('Just launched');
+    expect(html).toContain('No ratings yet');
+    expect(html).not.toContain('0 plays');
+    expect(html).not.toContain('0.0 rating');
+  });
+
+  it('hides empty category filter chips from browse controls', () => {
+    const html = renderToStaticMarkup(
+      createElement(BrowseControls, {
+        pathname: '/games',
+        showTagFilter: false,
+        state: {
+          sort: 'featured',
+          multiplayer: false,
+          mobile: false,
+          isNew: false,
+          editorsPick: false
+        },
+        tags: []
+      })
+    );
+
+    for (const hiddenCategory of ['Action', 'Adventure', 'Multiplayer', 'Shooting', 'Sports']) {
+      expect(html).not.toContain(`category=${hiddenCategory}`);
+    }
+
+    for (const visibleCategory of ['Puzzle', 'Arcade', 'Racing', 'Management', 'Casual']) {
+      expect(html).toContain(`category=${visibleCategory}`);
+    }
   });
 
   it('keeps registry data compatible with Prisma seed mapping', () => {
