@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { GameDetail } from '@/components/game/game-detail';
 import { getGameBySlug, getRelatedGames, listGames } from '@/lib/games';
-import { createPageMetadata } from '@/lib/metadata';
+import {
+  createGameDetailPageMetadata,
+  createMissingGamePageMetadata
+} from '@/lib/game-page-metadata';
 
 type GamePageProps = {
   params: Promise<{
@@ -23,24 +26,10 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
   const game = await getGameBySlug(slug);
 
   if (!game) {
-    return createPageMetadata(
-      'Game Not Found',
-      'The requested PixloGames title could not be found.',
-      {
-        path: `/games/${slug}`,
-        noIndex: true
-      }
-    );
+    return createMissingGamePageMetadata(slug);
   }
 
-  return createPageMetadata(
-    game.seoTitle ?? game.title,
-    game.seoDescription ?? game.shortDescription,
-    {
-      path: `/games/${game.slug}`,
-      image: game.coverImage || game.thumbnail
-    }
-  );
+  return createGameDetailPageMetadata(game);
 }
 
 export default async function GamePage({ params }: GamePageProps) {

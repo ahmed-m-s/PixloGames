@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { getGameIframePolicy, getGameMessageTargetOrigin } from '@/lib/embed-security';
+import { getPlayableGameIframeSrc } from '@/lib/game-embed-url';
 import { cn } from '@/lib/utils';
 import type { Game } from '@/types/game';
 
@@ -27,13 +28,6 @@ function escapeHtml(value: string) {
     .replaceAll("'", '&#39;');
 }
 
-function withAutostart(url: string) {
-  const [pathAndQuery, hash] = url.split('#');
-  const separator = pathAndQuery.includes('?') ? '&' : '?';
-
-  return `${pathAndQuery}${separator}autostart=1${hash ? `#${hash}` : ''}`;
-}
-
 export function GamePlayer({ game, playRequestKey = 0 }: GamePlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -48,12 +42,8 @@ export function GamePlayer({ game, playRequestKey = 0 }: GamePlayerProps) {
   const isUnavailable = game.source.mode === 'unavailable' || isBlockedEmbed;
   const isEmbedded = game.source.mode === 'embedded' && Boolean(game.source.url) && !isBlockedEmbed;
   const isPreview = game.source.mode === 'preview';
-  const embedUrl =
-    isEmbedded && game.source.url
-      ? game.embedType === 'html5-package'
-        ? withAutostart(game.source.url)
-        : game.source.url
-      : '';
+  const siteOrigin = typeof window === 'undefined' ? undefined : window.location.origin;
+  const embedUrl = isEmbedded ? getPlayableGameIframeSrc(game, siteOrigin) : '';
 
   const postFullscreenState = useCallback(
     (fullscreenActive: boolean) => {
@@ -298,7 +288,7 @@ export function GamePlayer({ game, playRequestKey = 0 }: GamePlayerProps) {
         )}
         ref={viewportRef}
       >
-        {hasStarted && isEmbedded ? (
+        {hasStarted && isEmbedded && embedUrl ? (
           <>
             <iframe
               allow={framePolicy.allow}
@@ -330,6 +320,17 @@ export function GamePlayer({ game, playRequestKey = 0 }: GamePlayerProps) {
               </div>
             ) : null}
           </>
+        ) : hasStarted && isEmbedded ? (
+          <div className="absolute inset-0 grid place-items-center bg-black/[0.78] px-6 text-center">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-ember">
+                Game frame unavailable
+              </p>
+              <p className="mt-3 max-w-md text-sm leading-6 text-white/62">
+                The provider embed URL could not be resolved for this game.
+              </p>
+            </div>
+          </div>
         ) : hasStarted && isPreview ? (
           <>
             <iframe

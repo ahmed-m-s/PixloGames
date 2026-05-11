@@ -1,13 +1,42 @@
 import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+import { GameDetail } from '@/components/game/game-detail';
 import { gameCollections } from '@/data/collections';
+import { gamePageContentByTitle, targetGamePageContentNames } from '@/data/game-page-content';
 import { categories, games } from '@/data/games';
 import { isPlayableLocalGame } from '@/lib/catalog-semantics';
+import { GAME_DISTRIBUTION_PROVIDER_NAME } from '@/lib/game-distribution';
+import { createGameDetailPageMetadata } from '@/lib/game-page-metadata';
 import { mapCollectionToDbData, mapGameToDbData } from '@/lib/repositories/prisma-mappers';
+import { makeGame } from '@/tests/fixtures';
 import type { Game } from '@/types/game';
 
 const projectRoot = process.cwd();
+const expectedStaticCatalogCount = 49;
+const expectedGameDistributionGameCount = 26;
+const promptListedPixloOriginalSlugs = [
+  'endless-runner',
+  'memory-match',
+  'block-puzzle',
+  'number-merge',
+  'panda-mart'
+] as const;
+const expectedFirstPartyLocalSlugs = [
+  '2048',
+  'block-puzzle',
+  'brick-breaker',
+  'color-sort',
+  'endless-runner',
+  'flappy-flight',
+  'memory-match',
+  'number-merge',
+  'panda-mart',
+  'snake',
+  'tic-tac-toe'
+] as const;
 const localPackageFiles = ['index.html', 'style.css', 'game.js'] as const;
 const localArtworkFields = ['thumbnail', 'coverImage'] as const;
 const localPackageBasePaths = ['/games', '/playable-games'] as const;
@@ -33,6 +62,10 @@ function isLocalHtml5Package(game: Game) {
   );
 }
 
+function normalizeGameTitle(value: string) {
+  return value.toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
 function getExpectedLocalPackageUrls(game: Game) {
   return localPackageBasePaths.map((basePath) => `${basePath}/${game.slug}/index.html`);
 }
@@ -50,6 +83,10 @@ describe('catalog integrity', () => {
     expectUnique(
       games.map((game) => game.slug),
       'game slugs'
+    );
+    expectUnique(
+      games.map((game) => normalizeGameTitle(game.title)),
+      'game titles'
     );
     expectUnique(
       gameCollections.map((collection) => collection.id),
@@ -75,6 +112,47 @@ describe('catalog integrity', () => {
         /^[a-z0-9]+(?:-[a-z0-9]+)*$/
       );
       expectUnique(collection.gameIds, `${collection.title} game ids`);
+    }
+  });
+
+  it('keeps the expected static catalog and provider counts', () => {
+    const gameDistributionGames = games.filter(
+      (game) => game.source.providerName === GAME_DISTRIBUTION_PROVIDER_NAME
+    );
+
+    expect(games).toHaveLength(expectedStaticCatalogCount);
+    expect(gameDistributionGames).toHaveLength(expectedGameDistributionGameCount);
+    expect(targetGamePageContentNames).toHaveLength(31);
+  });
+
+  it('preserves prompt-listed Pixlo Originals and first-party local playable embeds', () => {
+    const gamesBySlug = new Map(games.map((game) => [game.slug, game]));
+    const firstPartyLocalSlugs = games
+      .filter((game) => game.sourceOrigin === 'first_party' && game.embedType === 'html5-package')
+      .map((game) => game.slug)
+      .sort((left, right) => left.localeCompare(right));
+
+    expect(firstPartyLocalSlugs).toEqual([...expectedFirstPartyLocalSlugs]);
+
+    for (const slug of promptListedPixloOriginalSlugs) {
+      const game = gamesBySlug.get(slug);
+
+      expect(game, `${slug} should remain in the canonical catalog`).toBeDefined();
+      if (!game) continue;
+
+      expect(game.sourceOrigin, `${slug} should stay first-party`).toBe('first_party');
+      expect(game.embedType, `${slug} should stay a local HTML5 package`).toBe('html5-package');
+      expect(game.source.mode, `${slug} should remain embedded`).toBe('embedded');
+      expect(game.source.providerName, `${slug} should not be a remote provider embed`).not.toBe(
+        GAME_DISTRIBUTION_PROVIDER_NAME
+      );
+      expect(
+        getExpectedLocalPackageUrls(game),
+        `${slug} should keep its local/self-hosted package URL`
+      ).toContain(game.embedUrl);
+      expect(game.source.url, `${slug} source URL should match local embed URL`).toBe(
+        game.embedUrl
+      );
     }
   });
 
@@ -177,6 +255,92 @@ describe('catalog integrity', () => {
         }
       }
     }
+  });
+
+  it('keeps provided game page SEO content attached to the 31 target games', () => {
+    const gamesByTitle = new Map(games.map((game) => [normalizeGameTitle(game.title), game]));
+
+    expect(targetGamePageContentNames).toHaveLength(31);
+
+    for (const targetName of targetGamePageContentNames) {
+      const normalizedTitle = normalizeGameTitle(targetName);
+      const game = gamesByTitle.get(normalizedTitle);
+      const content = gamePageContentByTitle.get(normalizedTitle);
+
+      expect(game, `${targetName} should exist in the canonical catalog`).toBeDefined();
+      expect(content, `${targetName} should have a provided content block`).toBeDefined();
+      expect(game?.seoTitle, `${targetName} SEO title should match provided copy`).toBe(
+        content?.seoTitle
+      );
+      expect(game?.seoDescription, `${targetName} SEO description should match provided copy`).toBe(
+        content?.seoDescription
+      );
+      expect(game?.description, `${targetName} description should match provided copy`).toBe(
+        content?.description
+      );
+    }
+  });
+
+  it('keeps all GameDistribution games populated with page SEO content', () => {
+    const gameDistributionGames = games.filter(
+      (game) => game.source.providerName === 'GameDistribution'
+    );
+
+    expect(gameDistributionGames).toHaveLength(26);
+
+    for (const game of gameDistributionGames) {
+      expect(game.seoTitle?.trim(), `${game.title} SEO title is required`).not.toBe('');
+      expect(game.seoDescription?.trim(), `${game.title} SEO description is required`).not.toBe('');
+      expect(game.description.trim(), `${game.title} full description is required`).not.toBe('');
+      expect(
+        gamePageContentByTitle.has(normalizeGameTitle(game.title)),
+        `${game.title} should be backed by provided copy`
+      ).toBe(true);
+    }
+  });
+
+  it('builds game detail metadata from SEO fields with safe fallbacks', () => {
+    const targetGame = games.find((game) => game.title === 'Mojicon Spring Connect');
+
+    expect(targetGame).toBeDefined();
+
+    const targetMetadata = createGameDetailPageMetadata(targetGame!);
+
+    expect(targetMetadata.title).toBe(targetGame!.seoTitle);
+    expect(targetMetadata.description).toBe(targetGame!.seoDescription);
+    expect(targetMetadata.alternates?.canonical).toBe(
+      `http://localhost:3000/games/${targetGame!.slug}`
+    );
+
+    const fallbackGame = makeGame({
+      slug: 'fallback-racer',
+      title: 'Fallback Racer',
+      shortDescription: 'Fallback browser racing summary.',
+      seoTitle: undefined,
+      seoDescription: undefined
+    });
+    const fallbackMetadata = createGameDetailPageMetadata(fallbackGame);
+
+    expect(fallbackMetadata.title).toBe('Fallback Racer - PixloGames');
+    expect(fallbackMetadata.description).toBe('Fallback browser racing summary.');
+  });
+
+  it('renders the provided full description in the game detail page body', () => {
+    const targetGame = games.find((game) => game.title === 'Mojicon Spring Connect');
+
+    expect(targetGame).toBeDefined();
+
+    const html = renderToStaticMarkup(
+      createElement(GameDetail, {
+        game: targetGame!,
+        relatedGames: []
+      })
+    );
+
+    expect(html).toContain('About this game');
+    expect(html).toContain(
+      'Mojicon Spring Connect is a relaxing mahjong matching game wrapped in fresh spring visuals'
+    );
   });
 
   it('keeps registry data compatible with Prisma seed mapping', () => {

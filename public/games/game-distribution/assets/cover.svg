@@ -1,0 +1,49 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 1200 630"
+  role="img"
+  aria-labelledby="title desc"
+>
+  <title id="title">GameDistribution game cover placeholder</title>
+  <desc id="desc">A PixloGames placeholder cover for remote GameDistribution browser games.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#05080a" />
+      <stop offset="0.5" stop-color="#101827" />
+      <stop offset="1" stop-color="#14251d" />
+    </linearGradient>
+    <radialGradient id="glow" cx="0.28" cy="0.25" r="0.7">
+      <stop offset="0" stop-color="#5cffad" stop-opacity="0.42" />
+      <stop offset="1" stop-color="#5cffad" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#glow)" />
+  <rect
+    x="94"
+    y="82"
+    width="1012"
+    height="466"
+    rx="30"
+    fill="#0b0f12"
+    stroke="#ffffff"
+    stroke-opacity="0.12"
+    stroke-width="3"
+  />
+  <rect x="154" y="146" width="242" height="242" rx="28" fill="#5cffad" opacity="0.92" />
+  <rect x="456" y="168" width="426" height="44" rx="22" fill="#fbbf24" opacity="0.94" />
+  <rect x="456" y="246" width="560" height="34" rx="17" fill="#38bdf8" opacity="0.8" />
+  <rect x="456" y="316" width="430" height="34" rx="17" fill="#ffffff" opacity="0.16" />
+  <rect x="154" y="438" width="862" height="56" rx="18" fill="#ffffff" opacity="0.08" />
+  <text
+    x="586"
+    y="476"
+    fill="#f8fafc"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="28"
+    font-weight="700"
+    text-anchor="middle"
+  >
+    Remote HTML5 game via GameDistribution
+  </text>
+</svg>
