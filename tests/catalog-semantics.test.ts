@@ -27,8 +27,18 @@ describe('catalog semantics', () => {
     expect(isPlayableCatalogGame(game)).toBe(true);
   });
 
-  it('classifies seeded non-local catalog entries as preview entries until a playable embed is connected', () => {
-    const game = getSeededGame('neon-driftline');
+  it('classifies non-local catalog entries as preview entries until a playable embed is connected', () => {
+    const game = makeGame({
+      hasRealEmbed: false,
+      embedType: 'local-preview',
+      sourceOrigin: 'manual_admin',
+      source: {
+        mode: 'preview',
+        embedType: 'local-preview',
+        url: 'https://play.pixlogames.local/preview-game',
+        message: 'Local preview until an approved playable embed is connected.'
+      }
+    });
 
     expect(getCatalogEntryKind(game)).toBe('preview');
     expect(isPreviewCatalogEntry(game)).toBe(true);
@@ -59,7 +69,19 @@ describe('catalog semantics', () => {
   it('summarizes mixed catalog entries without conflating preview entries with playable games', () => {
     const summary = summarizeCatalogEntries([
       getSeededGame('endless-runner'),
-      getSeededGame('neon-driftline'),
+      makeGame({
+        id: 'game-preview-summary',
+        slug: 'preview-summary',
+        hasRealEmbed: false,
+        embedType: 'local-preview',
+        sourceOrigin: 'manual_admin',
+        source: {
+          mode: 'preview',
+          embedType: 'local-preview',
+          url: 'https://play.pixlogames.local/preview-summary',
+          message: 'Local preview until an approved playable embed is connected.'
+        }
+      }),
       makeGame({
         id: 'game-remote-summary',
         slug: 'remote-summary',

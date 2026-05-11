@@ -19,13 +19,7 @@ export const gameCollections: GameCollection[] = [
       'game-color-sort',
       'game-brick-breaker',
       'game-flappy-flight',
-      'game-2048',
-      'game-neon-driftline',
-      'game-rocket-rivals',
-      'game-shadow-sprint',
-      'game-orbit-raiders',
-      'game-crypt-circuits',
-      'game-forest-runner'
+      'game-2048'
     ],
     priority: 100,
     sponsored: false,
@@ -89,12 +83,7 @@ export const gameCollections: GameCollection[] = [
       'game-endless-runner',
       'game-memory-match',
       'game-block-puzzle',
-      'game-number-merge',
-      'game-neon-driftline',
-      'game-rocket-rivals',
-      'game-shadow-sprint',
-      'game-cabinet-clash',
-      'game-tile-tempo'
+      'game-number-merge'
     ],
     priority: 90,
     sponsored: false,
@@ -119,12 +108,7 @@ export const gameCollections: GameCollection[] = [
       'game-endless-runner',
       'game-memory-match',
       'game-block-puzzle',
-      'game-number-merge',
-      'game-orbit-raiders',
-      'game-tile-tempo',
-      'game-goalstorm',
-      'game-micro-mayhem',
-      'game-crypt-circuits'
+      'game-number-merge'
     ],
     priority: 80,
     sponsored: false,
@@ -138,7 +122,7 @@ export const gameCollections: GameCollection[] = [
     type: 'editorial',
     visibility: 'public',
     placement: ['homepage', 'category'],
-    gameIds: ['game-rocket-rivals', 'game-goalstorm', 'game-micro-mayhem', 'game-battle-bounce'],
+    gameIds: [],
     category: 'Multiplayer',
     priority: 76,
     sponsored: false,
@@ -158,10 +142,7 @@ export const gameCollections: GameCollection[] = [
       'game-2048',
       'game-memory-match',
       'game-block-puzzle',
-      'game-number-merge',
-      'game-forest-runner',
-      'game-skyforge-quest',
-      'game-tile-tempo'
+      'game-number-merge'
     ],
     priority: 50,
     sponsored: false,
@@ -177,7 +158,7 @@ export const gameCollections: GameCollection[] = [
     type: 'sponsored',
     visibility: 'internal',
     placement: ['sponsored', 'internal'],
-    gameIds: ['game-neon-driftline', 'game-rocket-rivals', 'game-cabinet-clash'],
+    gameIds: [],
     priority: 40,
     sponsored: true,
     owner: 'Revenue Ops'

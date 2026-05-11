@@ -14,6 +14,14 @@ export function formatRating(rating: number) {
   return rating.toFixed(1);
 }
 
+export function formatPlayCountLabel(plays: number) {
+  return plays > 0 ? `${formatPlayCount(plays)} plays` : 'Just launched';
+}
+
+export function formatRatingLabel(rating: number) {
+  return rating > 0 ? `${formatRating(rating)} rating` : 'No ratings yet';
+}
+
 export function formatPlayedAt(playedAt: string) {
   const timestamp = new Date(playedAt).getTime();
 
