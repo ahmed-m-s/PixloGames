@@ -10,6 +10,37 @@ import { gameCollections } from '@/data/collections';
 import { games } from '@/data/games';
 import { gameSubmissions } from '@/data/submissions';
 
+const stalePreviewGameSlugs = [
+  'rocket-rivals',
+  'neon-driftline',
+  'shadow-sprint',
+  'tile-tempo',
+  'cabinet-clash',
+  'orbit-raiders',
+  'crypt-circuits',
+  'forest-runner',
+  'goalstorm',
+  'micro-mayhem',
+  'battle-bounce',
+  'skyforge-quest'
+] as const;
+
+async function deleteStalePreviewGames() {
+  const result = await prisma.game.deleteMany({
+    where: {
+      slug: {
+        in: [...stalePreviewGameSlugs]
+      }
+    }
+  });
+
+  console.log(
+    `Removed ${result.count} stale preview-entry games matching known slugs: ${stalePreviewGameSlugs.join(
+      ', '
+    )}.`
+  );
+}
+
 async function seedGames() {
   for (const game of games) {
     const data = mapGameToDbData(game);
@@ -131,6 +162,7 @@ async function seedInternalUsers() {
 }
 
 async function main() {
+  await deleteStalePreviewGames();
   await seedGames();
   await seedCollections();
   await seedSubmissions();
