@@ -1,4 +1,5 @@
 import type { Game } from '@/types/game';
+import { getGameDistributionId, isGameDistributionGame } from '@/lib/game-distribution';
 
 export type GameEmbedTrustLevel =
   | 'trusted-first-party-local'
@@ -147,6 +148,18 @@ export function getGameEmbedSecurityIssues(game: Game): GameEmbedSecurityIssue[]
         message: 'Embedded games require a source URL.'
       }
     ];
+  }
+
+  if (isGameDistributionGame(game) && !getGameDistributionId(game)) {
+    issues.push({
+      field: 'source.url',
+      message:
+        'GameDistribution games require a valid GameDistribution game URL, embed URL, or provider slug.'
+    });
+  }
+
+  if (issues.length > 0) {
+    return issues;
   }
 
   if (isExpectedFirstPartyLocalPackage(game) || isHttpsUrl(sourceUrl)) {

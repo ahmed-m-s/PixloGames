@@ -44,7 +44,9 @@ type OperationalGameFields =
   | 'sourceSubmissionId';
 
 export type GameContentInput = Omit<Game, ProductionGameFields | OperationalGameFields> &
-  Partial<Omit<Pick<Game, ProductionGameFields | OperationalGameFields>, 'source'>>;
+  Partial<Omit<Pick<Game, ProductionGameFields | OperationalGameFields>, 'source'>> & {
+    source?: Partial<GameSource>;
+  };
 
 const categoryStudios: Record<GameCategory, { developer: string; publisher: string }> = {
   Action: { developer: 'Kinetic Fox Studio', publisher: 'Pixlo Publishing' },
@@ -55,6 +57,7 @@ const categoryStudios: Record<GameCategory, { developer: string; publisher: stri
   Shooting: { developer: 'Orbit Forge', publisher: 'Pixlo Publishing' },
   Sports: { developer: 'Pocket Stadium', publisher: 'Pixlo Sports' },
   Arcade: { developer: 'Cabinet Club', publisher: 'Pixlo Select' },
+  Casual: { developer: 'Pixlo Publishing', publisher: 'Pixlo Select' },
   Management: { developer: 'PixloGames Lab', publisher: 'PixloGames' }
 };
 
@@ -98,11 +101,15 @@ function getOrientation(game: GameContentInput): GameOrientation {
 }
 
 function getGameSource(game: GameContentInput, embedType: GameEmbedType): GameSource {
+  const providedSource = game.source;
+
   if (game.status === 'unavailable') {
     return {
       mode: 'unavailable',
       embedType: 'none',
-      message: 'This game is not currently available for play.'
+      providerName: providedSource?.providerName,
+      url: providedSource?.url,
+      message: providedSource?.message ?? 'This game is not currently available for play.'
     };
   }
 
@@ -110,18 +117,19 @@ function getGameSource(game: GameContentInput, embedType: GameEmbedType): GameSo
     return {
       mode: 'embedded',
       embedType,
-      providerName: 'Pixlo Embed',
-      url: game.embedUrl,
-      message: 'Playable HTML5 embed'
+      providerName: providedSource?.providerName ?? 'Pixlo Embed',
+      url: providedSource?.url ?? game.embedUrl,
+      message: providedSource?.message ?? 'Playable HTML5 embed'
     };
   }
 
   return {
     mode: 'preview',
     embedType: 'local-preview',
-    providerName: 'Pixlo Preview',
-    url: game.embedUrl,
-    message: 'Local preview until an approved playable embed is connected.'
+    providerName: providedSource?.providerName ?? 'Pixlo Preview',
+    url: providedSource?.url ?? game.embedUrl,
+    message:
+      providedSource?.message ?? 'Local preview until an approved playable embed is connected.'
   };
 }
 

@@ -1,5 +1,7 @@
 import type { Game, GameCategory } from '@/types/game';
-import { prepareGameContent } from '@/lib/content';
+import { applyProvidedGamePageContent } from '@/data/game-page-content';
+import { prepareGameContent, type GameContentInput } from '@/lib/content';
+import { GAME_DISTRIBUTION_PROVIDER_NAME } from '@/lib/game-distribution';
 import { createLocalHtml5Game } from '@/lib/game-ingestion';
 
 export type CategoryInfo = {
@@ -59,6 +61,12 @@ export const categories: CategoryInfo[] = [
     accent: 'brand'
   },
   {
+    name: 'Casual',
+    slug: 'casual',
+    description: 'Relaxed browser games with friendly controls and quick starts.',
+    accent: 'aqua'
+  },
+  {
     name: 'Management',
     slug: 'management',
     description: 'Shop, idle, and resource games built around smart upgrades.',
@@ -66,7 +74,254 @@ export const categories: CategoryInfo[] = [
   }
 ];
 
-export const games: Game[] = prepareGameContent([
+type GameDistributionCategorySlug =
+  | 'mahjong'
+  | 'match-3'
+  | 'sudoku'
+  | 'word'
+  | 'physics'
+  | 'idle'
+  | 'merge'
+  | 'cooking'
+  | 'restaurant'
+  | 'runner'
+  | 'jumping'
+  | 'stack'
+  | 'bubble-shooter'
+  | 'racing';
+
+type GameDistributionRegistration = {
+  title: string;
+  categorySlug: GameDistributionCategorySlug;
+  url: string;
+};
+
+const gameDistributionCategoryMap: Record<GameDistributionCategorySlug, GameCategory> = {
+  mahjong: 'Puzzle',
+  'match-3': 'Puzzle',
+  sudoku: 'Puzzle',
+  word: 'Puzzle',
+  physics: 'Arcade',
+  idle: 'Management',
+  merge: 'Puzzle',
+  cooking: 'Casual',
+  restaurant: 'Management',
+  runner: 'Arcade',
+  jumping: 'Arcade',
+  stack: 'Arcade',
+  'bubble-shooter': 'Puzzle',
+  racing: 'Racing'
+};
+
+const gameDistributionRegistrations: GameDistributionRegistration[] = [
+  {
+    title: 'Mojicon Spring Connect',
+    categorySlug: 'mahjong',
+    url: 'https://gamedistribution.com/games/mojicon-spring-connect/'
+  },
+  {
+    title: 'Mahjong Solitaire Zodiac',
+    categorySlug: 'mahjong',
+    url: 'https://gamedistribution.com/games/mahjong-solitaire-zodiac/'
+  },
+  {
+    title: 'Fruit Mahjong 3D',
+    categorySlug: 'mahjong',
+    url: 'https://gamedistribution.com/games/fruit-mahjong-3d/'
+  },
+  {
+    title: 'Stickman Jewel Match 3 Master',
+    categorySlug: 'match-3',
+    url: 'https://gamedistribution.com/games/stickman-jewel-match-3-master/'
+  },
+  {
+    title: 'Candy Riddles Free Match 3 Puzzle',
+    categorySlug: 'match-3',
+    url: 'https://gamedistribution.com/games/candy-riddles-free-match-3-puzzle/'
+  },
+  {
+    title: 'Gem Match Deluxe',
+    categorySlug: 'match-3',
+    url: 'https://gamedistribution.com/games/gem-match-deluxe/'
+  },
+  {
+    title: 'New Daily Sudoku',
+    categorySlug: 'sudoku',
+    url: 'https://gamedistribution.com/games/new-daily-sudoku/'
+  },
+  {
+    title: 'Sudoku Master',
+    categorySlug: 'sudoku',
+    url: 'https://gamedistribution.com/games/sudoku-master-1/'
+  },
+  {
+    title: 'Word Connect',
+    categorySlug: 'word',
+    url: 'https://gamedistribution.com/games/word-connect/'
+  },
+  {
+    title: 'Word Search 3',
+    categorySlug: 'word',
+    url: 'https://gamedistribution.com/games/word-search-3/'
+  },
+  {
+    title: 'Super Stickman Sling',
+    categorySlug: 'physics',
+    url: 'https://gamedistribution.com/games/super-stickman-sling/'
+  },
+  {
+    title: 'Rescue Boss Cut Rope',
+    categorySlug: 'physics',
+    url: 'https://gamedistribution.com/games/rescue-boss-cut-rope/'
+  },
+  {
+    title: 'Idle Mining Empire',
+    categorySlug: 'idle',
+    url: 'https://gamedistribution.com/games/idle-mining-empire/'
+  },
+  {
+    title: 'Cinema Empire Idle Tycoon',
+    categorySlug: 'idle',
+    url: 'https://gamedistribution.com/games/cinema-empire-idle-tycoon/'
+  },
+  {
+    title: '2048 Merge World',
+    categorySlug: 'merge',
+    url: 'https://gamedistribution.com/games/2048-merge-world/'
+  },
+  {
+    title: 'Top Burger Cooking',
+    categorySlug: 'cooking',
+    url: 'https://gamedistribution.com/games/top-burger-cooking/'
+  },
+  {
+    title: 'Pizza Maker',
+    categorySlug: 'cooking',
+    url: 'https://gamedistribution.com/games/pizza-maker-1/'
+  },
+  {
+    title: 'Idle Restaurant Tycoon',
+    categorySlug: 'restaurant',
+    url: 'https://gamedistribution.com/games/idle-restaurant-tycoon/'
+  },
+  {
+    title: 'Stickman Run',
+    categorySlug: 'runner',
+    url: 'https://gamedistribution.com/games/stickman-run/'
+  },
+  {
+    title: 'Stick Hero',
+    categorySlug: 'jumping',
+    url: 'https://gamedistribution.com/games/stick-hero/'
+  },
+  {
+    title: 'Stack Tower',
+    categorySlug: 'stack',
+    url: 'https://gamedistribution.com/games/stack-tower-1/'
+  },
+  {
+    title: 'Bubble Shooter Classic Match 3 Pop Bubbles',
+    categorySlug: 'bubble-shooter',
+    url: 'https://gamedistribution.com/games/bubble-shooter-classic-match-3-pop-bubbles/'
+  },
+  {
+    title: 'Bubble Pop Fairyland',
+    categorySlug: 'bubble-shooter',
+    url: 'https://gamedistribution.com/games/bubble-pop-fairyland/'
+  },
+  {
+    title: 'Bubble Pop Butterfly',
+    categorySlug: 'bubble-shooter',
+    url: 'https://gamedistribution.com/games/bubble-pop-butterfly/'
+  },
+  {
+    title: 'Drift Boss',
+    categorySlug: 'racing',
+    url: 'https://gamedistribution.com/games/drift-boss/'
+  },
+  {
+    title: 'Parking Fury 3D',
+    categorySlug: 'racing',
+    url: 'https://gamedistribution.com/games/parking-fury-3d/'
+  }
+];
+
+function slugifyGameTitle(title: string) {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function createGameDistributionGame(input: GameDistributionRegistration): GameContentInput {
+  const slug = slugifyGameTitle(input.title);
+  const category = gameDistributionCategoryMap[input.categorySlug];
+
+  return {
+    id: `game-${slug}`,
+    slug,
+    title: input.title,
+    shortDescription: `Play ${input.title} on PixloGames through GameDistribution.`,
+    description: `${input.title} is a remote GameDistribution HTML5 game in the ${input.categorySlug} category, embedded for browser play on PixloGames through a sandboxed third-party iframe.`,
+    thumbnail: '/games/game-distribution/assets/thumbnail.svg',
+    coverImage: '/games/game-distribution/assets/cover.svg',
+    category,
+    tags: Array.from(new Set([input.categorySlug, category.toLowerCase(), 'gamedistribution'])),
+    rating: 0,
+    plays: 0,
+    isNew: true,
+    isTrending: false,
+    isMultiplayer: false,
+    isEditorsPick: false,
+    embedUrl: input.url,
+    controls: {
+      keyboard: [],
+      mouse: true,
+      touch: true
+    },
+    mobileSupported: true,
+    developerName: GAME_DISTRIBUTION_PROVIDER_NAME,
+    publisherName: GAME_DISTRIBUTION_PROVIDER_NAME,
+    releaseDate: '2026-05-11',
+    updatedAt: '2026-05-11',
+    supportedPlatforms: ['desktop', 'mobile', 'tablet'],
+    orientation: 'responsive',
+    difficulty: 'medium',
+    seoTitle: input.title,
+    seoDescription: `Play ${input.title} on PixloGames through GameDistribution.`,
+    contentRating: 'Everyone',
+    featuredWeight: 0,
+    isFeatured: false,
+    isSponsored: false,
+    adSafe: true,
+    status: 'published',
+    playMode: 'single-player',
+    hasRealEmbed: true,
+    embedType: 'external-provider',
+    source: {
+      mode: 'embedded',
+      embedType: 'external-provider',
+      providerName: GAME_DISTRIBUTION_PROVIDER_NAME,
+      url: input.url,
+      message: 'Playable GameDistribution embed.'
+    },
+    submissionStatus: 'approved',
+    moderationStatus: 'approved',
+    reviewNotes: ['Registered from the provided GameDistribution catalog URL.'],
+    featuredPriority: 0,
+    sponsoredPriority: 0,
+    collectionIds: [],
+    visibility: 'public',
+    publishAt: '2026-05-11',
+    sourceOrigin: 'publisher_feed',
+    ingestionWarnings: [],
+    qaStatus: 'passed'
+  };
+}
+
+const gameDistributionGames = gameDistributionRegistrations.map(createGameDistributionGame);
+
+const gameContentInputs: GameContentInput[] = [
   {
     id: 'game-endless-runner',
     slug: 'endless-runner',
@@ -559,6 +814,7 @@ export const games: Game[] = prepareGameContent([
     seoDescription:
       'Play Panda Mart on PixloGames. Collect bamboo, stock shelves, serve forest customers, and upgrade a tiny mobile-ready shop management game.'
   }),
+  ...gameDistributionGames,
   {
     id: 'game-neon-driftline',
     slug: 'neon-driftline',
@@ -881,7 +1137,9 @@ export const games: Game[] = prepareGameContent([
     },
     mobileSupported: true
   }
-]);
+];
+
+export const games: Game[] = prepareGameContent(applyProvidedGamePageContent(gameContentInputs));
 
 export const trendingGames = games.filter((game) => game.isTrending).slice(0, 6);
 export const newGames = games.filter((game) => game.isNew).slice(0, 6);

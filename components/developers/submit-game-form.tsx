@@ -30,6 +30,7 @@ const categories = [
   'Shooting',
   'Sports',
   'Arcade',
+  'Casual',
   'Management'
 ];
 

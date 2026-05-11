@@ -59,6 +59,7 @@ const validCategories = new Set([
   'Shooting',
   'Sports',
   'Arcade',
+  'Casual',
   'Management'
 ]);
 
